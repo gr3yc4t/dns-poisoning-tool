@@ -1,4 +1,8 @@
-#For packet forging
+## @package DNS_Poisoning
+#
+#   This package includes all function to execute the poisoning attack
+
+
 from scapy import *
 from scapy.all import *
 import scapy.layers.l2
@@ -8,9 +12,17 @@ import logging
 import threading
 import multiprocessing
 
-
+## DNSPoisoning
+#
+#   This class is responsible for the dns poisoning attack
+#
 class DNSPoisoning:
 
+    ##  Constructor
+    #
+    #   @param victim_server The IP of the server to attack
+    #   @param attacker_ip The IP of the attacker
+    #
     def __init__(self, victim_server, spoofed_domain, attacker_ip, authoritative_nameserver, initial_id, interrupt_handler=None, log=lambda msg: None):
         self.victim_server = victim_server
         self.spoofed_domain = spoofed_domain
@@ -31,22 +43,26 @@ class DNSPoisoning:
         log("Invalid URL used: " + self.invalid_url)
 
 
+    ##  Send crafted packet
+    #
+    #   @brief This function bla bla bla bla aaaaaa
+    #   @param id_req The TXID to be used
+    #   1) responses should come from the same dest port (53)
+    #   2) Question should match the query section
+    #   3) Query ID should match
+    #
+    # Use Default DNS port as default source port    
+    #
+    # DNS Request:  
+    #   -) ID
+    #   -) Question
+    #   -) 
+    #
+    #
 
     def send_crafted_packet(self, id_req):
+        ##!@brief Send Crafted Packet
 
-        # To generate a valid request we should:
-        # 1) responses should come from the same dest port (53)
-        # 2) Question should match the query section
-        # 3) Query ID should match
-        #
-        # Use Default DNS port as default source port    
-        #
-        # DNS Request:  
-        #   -) ID
-        #   -) Question
-        #   -) 
-        #
-        #
         
         #print("Using ID: " + str(id_req), end='') 
             
