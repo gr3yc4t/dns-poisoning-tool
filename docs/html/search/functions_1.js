@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['get_5fid',['get_id',['../classdns__attack_1_1DNSAttack.html#afe2017b415f6294ce277c1cebd1b52f6',1,'dns_attack::DNSAttack']]]
+  ['check_5fpoisoning',['check_poisoning',['../classdns__poisoning_1_1DNSPoisoning.html#aa59092cd2bd23620644af9814f782888',1,'dns_poisoning::DNSPoisoning']]]
 ];

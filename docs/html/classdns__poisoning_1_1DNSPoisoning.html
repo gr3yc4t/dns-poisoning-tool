@@ -76,64 +76,105 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2aefb588dff724bbb239fb54e2c6ca19"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a2aefb588dff724bbb239fb54e2c6ca19">__init__</a> (self, victim_server, spoofed_domain, attacker_ip, authoritative_nameserver, initial_id, interrupt_handler=None, log=lambda msg:None)</td></tr>
-<tr class="memdesc:a2aefb588dff724bbb239fb54e2c6ca19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a2aefb588dff724bbb239fb54e2c6ca19">More...</a><br /></td></tr>
-<tr class="separator:a2aefb588dff724bbb239fb54e2c6ca19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a139501dd8885d190a903959cd74169fc"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a139501dd8885d190a903959cd74169fc">__init__</a> (self, <a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a7ddda8f8750a3f6be247ba0aa2ae62da">victim_server</a>, <a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a837298577cd23e34cf06ca469ab2ae77">spoofed_domain</a>, <a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a1930111c8e62f71561f7fc808f17f306">attacker_ip</a>, authoritative_ns, initial_id=None, <a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a3d11bc7dacd26234e0dab3a2369d7711">ttl</a>=30000, victim_mac=None, <a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#ad93385ef31024e556a14abdca1dffed7">nic_interface</a>=None, <a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a9c8aa320d6ae14df500e4e04cf5f0881">interrupt_handler</a>=None, blessing_terminal=None, <a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#ad3a9cdfed9445196223af306ef932230">log</a>=lambda msg:None)</td></tr>
+<tr class="memdesc:a139501dd8885d190a903959cd74169fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a139501dd8885d190a903959cd74169fc">More...</a><br /></td></tr>
+<tr class="separator:a139501dd8885d190a903959cd74169fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9212c2ddbca12072d16ea7d71f08d1bd"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a9212c2ddbca12072d16ea7d71f08d1bd">set_interface</a> (self, interface)</td></tr>
+<tr class="memdesc:a9212c2ddbca12072d16ea7d71f08d1bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set Interface.  <a href="#a9212c2ddbca12072d16ea7d71f08d1bd">More...</a><br /></td></tr>
+<tr class="separator:a9212c2ddbca12072d16ea7d71f08d1bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26b03d6d9bb3955bee02bb786f7fa349"><td class="memItemLeft" align="right" valign="top"><a id="a26b03d6d9bb3955bee02bb786f7fa349"></a>
+def&#160;</td><td class="memItemRight" valign="bottom"><b>set_victim_mac</b> (self, victim_mac)</td></tr>
+<tr class="separator:a26b03d6d9bb3955bee02bb786f7fa349"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd71b87190582b47006ea5f44554766a"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#abd71b87190582b47006ea5f44554766a">open_socket</a> (self)</td></tr>
+<tr class="memdesc:abd71b87190582b47006ea5f44554766a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open Socket.  <a href="#abd71b87190582b47006ea5f44554766a">More...</a><br /></td></tr>
+<tr class="separator:abd71b87190582b47006ea5f44554766a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b88cb0469db0817033e43088f6c17fd"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a5b88cb0469db0817033e43088f6c17fd">faster_flooding</a> (self, victim_mac=None, <a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#ad93385ef31024e556a14abdca1dffed7">nic_interface</a>=None)</td></tr>
+<tr class="memdesc:a5b88cb0469db0817033e43088f6c17fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Faster Flooding Mode.  <a href="#a5b88cb0469db0817033e43088f6c17fd">More...</a><br /></td></tr>
+<tr class="separator:a5b88cb0469db0817033e43088f6c17fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7208959663e75447b0221fc7fab129e7"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a7208959663e75447b0221fc7fab129e7">send_crafted_packet</a> (self, id_req)</td></tr>
 <tr class="memdesc:a7208959663e75447b0221fc7fab129e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send crafted packet.  <a href="#a7208959663e75447b0221fc7fab129e7">More...</a><br /></td></tr>
 <tr class="separator:a7208959663e75447b0221fc7fab129e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c8ff9306f38db988648645b93f399d1"><td class="memItemLeft" align="right" valign="top"><a id="a0c8ff9306f38db988648645b93f399d1"></a>
 def&#160;</td><td class="memItemRight" valign="bottom"><b>send_inital_query</b> (self)</td></tr>
 <tr class="separator:a0c8ff9306f38db988648645b93f399d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1154be89dbdf8a2769a2ca1d3635f363"><td class="memItemLeft" align="right" valign="top"><a id="a1154be89dbdf8a2769a2ca1d3635f363"></a>
-def&#160;</td><td class="memItemRight" valign="bottom"><b>start_flooding</b> (self)</td></tr>
-<tr class="separator:a1154be89dbdf8a2769a2ca1d3635f363"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa59092cd2bd23620644af9814f782888"><td class="memItemLeft" align="right" valign="top"><a id="aa59092cd2bd23620644af9814f782888"></a>
-def&#160;</td><td class="memItemRight" valign="bottom"><b>check_poisoning</b> (self)</td></tr>
+<tr class="memitem:a2485de4baea787fa1d3bb22e422bffb5"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a2485de4baea787fa1d3bb22e422bffb5">start_flooding</a> (self, number_of_guess=500, spacing=800)</td></tr>
+<tr class="memdesc:a2485de4baea787fa1d3bb22e422bffb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start Flooding.  <a href="#a2485de4baea787fa1d3bb22e422bffb5">More...</a><br /></td></tr>
+<tr class="separator:a2485de4baea787fa1d3bb22e422bffb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa59092cd2bd23620644af9814f782888"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#aa59092cd2bd23620644af9814f782888">check_poisoning</a> (self)</td></tr>
+<tr class="memdesc:aa59092cd2bd23620644af9814f782888"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check Poisoning.  <a href="#aa59092cd2bd23620644af9814f782888">More...</a><br /></td></tr>
 <tr class="separator:aa59092cd2bd23620644af9814f782888"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65f1f3e1f022f64ca35c73b80b6ccbfe"><td class="memItemLeft" align="right" valign="top"><a id="a65f1f3e1f022f64ca35c73b80b6ccbfe"></a>
-def&#160;</td><td class="memItemRight" valign="bottom"><b>stop_handler</b> (self, sig, frame)</td></tr>
+<tr class="memitem:a65f1f3e1f022f64ca35c73b80b6ccbfe"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a65f1f3e1f022f64ca35c73b80b6ccbfe">stop_handler</a> (self, sig, frame)</td></tr>
+<tr class="memdesc:a65f1f3e1f022f64ca35c73b80b6ccbfe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop Handler.  <a href="#a65f1f3e1f022f64ca35c73b80b6ccbfe">More...</a><br /></td></tr>
 <tr class="separator:a65f1f3e1f022f64ca35c73b80b6ccbfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a7ddda8f8750a3f6be247ba0aa2ae62da"><td class="memItemLeft" align="right" valign="top"><a id="a7ddda8f8750a3f6be247ba0aa2ae62da"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>victim_server</b></td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a7ddda8f8750a3f6be247ba0aa2ae62da">victim_server</a></td></tr>
+<tr class="memdesc:a7ddda8f8750a3f6be247ba0aa2ae62da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Victim Server IP. <br /></td></tr>
 <tr class="separator:a7ddda8f8750a3f6be247ba0aa2ae62da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a837298577cd23e34cf06ca469ab2ae77"><td class="memItemLeft" align="right" valign="top"><a id="a837298577cd23e34cf06ca469ab2ae77"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>spoofed_domain</b></td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a837298577cd23e34cf06ca469ab2ae77">spoofed_domain</a></td></tr>
+<tr class="memdesc:a837298577cd23e34cf06ca469ab2ae77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Target domain to spoof. <br /></td></tr>
 <tr class="separator:a837298577cd23e34cf06ca469ab2ae77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1930111c8e62f71561f7fc808f17f306"><td class="memItemLeft" align="right" valign="top"><a id="a1930111c8e62f71561f7fc808f17f306"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>attacker_ip</b></td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a1930111c8e62f71561f7fc808f17f306">attacker_ip</a></td></tr>
+<tr class="memdesc:a1930111c8e62f71561f7fc808f17f306"><td class="mdescLeft">&#160;</td><td class="mdescRight">IP of the Attacker. <br /></td></tr>
 <tr class="separator:a1930111c8e62f71561f7fc808f17f306"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96cc4f6a6168118999763b206b72cf96"><td class="memItemLeft" align="right" valign="top"><a id="a96cc4f6a6168118999763b206b72cf96"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>id</b></td></tr>
-<tr class="separator:a96cc4f6a6168118999763b206b72cf96"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5cee7b7d0614a3baade77dcf4d5db1d7"><td class="memItemLeft" align="right" valign="top"><a id="a5cee7b7d0614a3baade77dcf4d5db1d7"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>sport</b></td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a5cee7b7d0614a3baade77dcf4d5db1d7">sport</a></td></tr>
+<tr class="memdesc:a5cee7b7d0614a3baade77dcf4d5db1d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Source Port of the target DNS. <br /></td></tr>
 <tr class="separator:a5cee7b7d0614a3baade77dcf4d5db1d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab54c7e8e4345d5ac1b054a2bf91aead5"><td class="memItemLeft" align="right" valign="top"><a id="ab54c7e8e4345d5ac1b054a2bf91aead5"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>flood_socket</b></td></tr>
-<tr class="separator:ab54c7e8e4345d5ac1b054a2bf91aead5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d11bc7dacd26234e0dab3a2369d7711"><td class="memItemLeft" align="right" valign="top"><a id="a3d11bc7dacd26234e0dab3a2369d7711"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a3d11bc7dacd26234e0dab3a2369d7711">ttl</a></td></tr>
+<tr class="memdesc:a3d11bc7dacd26234e0dab3a2369d7711"><td class="mdescLeft">&#160;</td><td class="mdescRight">TTL Value to be used in the response. <br /></td></tr>
+<tr class="separator:a3d11bc7dacd26234e0dab3a2369d7711"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad93385ef31024e556a14abdca1dffed7"><td class="memItemLeft" align="right" valign="top"><a id="ad93385ef31024e556a14abdca1dffed7"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#ad93385ef31024e556a14abdca1dffed7">nic_interface</a></td></tr>
+<tr class="memdesc:ad93385ef31024e556a14abdca1dffed7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Network Interface card to use. <br /></td></tr>
+<tr class="separator:ad93385ef31024e556a14abdca1dffed7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b7e61ab81185add0d7a97baab36924f"><td class="memItemLeft" align="right" valign="top"><a id="a2b7e61ab81185add0d7a97baab36924f"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>auth_nameserver</b></td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a2b7e61ab81185add0d7a97baab36924f">auth_nameserver</a></td></tr>
+<tr class="memdesc:a2b7e61ab81185add0d7a97baab36924f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Authoritative nameserver. <br /></td></tr>
 <tr class="separator:a2b7e61ab81185add0d7a97baab36924f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00a22b2725214b6052827a16b067066e"><td class="memItemLeft" align="right" valign="top"><a id="a00a22b2725214b6052827a16b067066e"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>flood_pool</b></td></tr>
 <tr class="separator:a00a22b2725214b6052827a16b067066e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c8aa320d6ae14df500e4e04cf5f0881"><td class="memItemLeft" align="right" valign="top"><a id="a9c8aa320d6ae14df500e4e04cf5f0881"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>interrupt_handler</b></td></tr>
-<tr class="separator:a9c8aa320d6ae14df500e4e04cf5f0881"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab54c7e8e4345d5ac1b054a2bf91aead5"><td class="memItemLeft" align="right" valign="top"><a id="ab54c7e8e4345d5ac1b054a2bf91aead5"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>flood_socket</b></td></tr>
+<tr class="separator:ab54c7e8e4345d5ac1b054a2bf91aead5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96cc4f6a6168118999763b206b72cf96"><td class="memItemLeft" align="right" valign="top"><a id="a96cc4f6a6168118999763b206b72cf96"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>id</b></td></tr>
+<tr class="separator:a96cc4f6a6168118999763b206b72cf96"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57e074a324e5682d4a0a0a02856c8e39"><td class="memItemLeft" align="right" valign="top"><a id="a57e074a324e5682d4a0a0a02856c8e39"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>invalid_url</b></td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a57e074a324e5682d4a0a0a02856c8e39">invalid_url</a></td></tr>
+<tr class="memdesc:a57e074a324e5682d4a0a0a02856c8e39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invalid URL used in the attack. <br /></td></tr>
 <tr class="separator:a57e074a324e5682d4a0a0a02856c8e39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae09fc057a818d97e5d55fa4d7e5d20e6"><td class="memItemLeft" align="right" valign="top"><a id="ae09fc057a818d97e5d55fa4d7e5d20e6"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>victim_mac</b></td></tr>
+<tr class="separator:ae09fc057a818d97e5d55fa4d7e5d20e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3a9cdfed9445196223af306ef932230"><td class="memItemLeft" align="right" valign="top"><a id="ad3a9cdfed9445196223af306ef932230"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#ad3a9cdfed9445196223af306ef932230">log</a></td></tr>
+<tr class="memdesc:ad3a9cdfed9445196223af306ef932230"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logging Function. <br /></td></tr>
+<tr class="separator:ad3a9cdfed9445196223af306ef932230"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e7bce13763fcf9676a495276500ae6d"><td class="memItemLeft" align="right" valign="top"><a id="a9e7bce13763fcf9676a495276500ae6d"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a9e7bce13763fcf9676a495276500ae6d">t</a></td></tr>
+<tr class="memdesc:a9e7bce13763fcf9676a495276500ae6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blessing terminal instance. <br /></td></tr>
+<tr class="separator:a9e7bce13763fcf9676a495276500ae6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c8aa320d6ae14df500e4e04cf5f0881"><td class="memItemLeft" align="right" valign="top"><a id="a9c8aa320d6ae14df500e4e04cf5f0881"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a9c8aa320d6ae14df500e4e04cf5f0881">interrupt_handler</a></td></tr>
+<tr class="memdesc:a9c8aa320d6ae14df500e4e04cf5f0881"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler of CTRL+C. <br /></td></tr>
+<tr class="separator:a9c8aa320d6ae14df500e4e04cf5f0881"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html" title="DNSPoisoning. ">DNSPoisoning</a>. </p>
-<p>This class is responsible for the dns poisoning attack </p>
+<p>This class is responsible for the dns poisoning attack. Two mode are available:</p><ul>
+<li>Normal Flood (Use IP packets)</li>
+<li>Faster Flood (Use Ethernet packets) </li>
+</ul>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a2aefb588dff724bbb239fb54e2c6ca19"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2aefb588dff724bbb239fb54e2c6ca19">&#9670;&nbsp;</a></span>__init__()</h2>
+<a id="a139501dd8885d190a903959cd74169fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a139501dd8885d190a903959cd74169fc">&#9670;&nbsp;</a></span>__init__()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -166,19 +207,43 @@ Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>authoritative_nameserver</em>, </td>
+          <td class="paramname"><em>authoritative_ns</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>initial_id</em>, </td>
+          <td class="paramname"><em>initial_id</em> = <code>None</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>ttl</em> = <code>30000</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>victim_mac</em> = <code>None</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>nic_interface</em> = <code>None</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>interrupt_handler</em> = <code>None</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>blessing_terminal</em> = <code>None</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -199,6 +264,15 @@ Public Attributes</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">victim_server</td><td>The IP of the server to attack </td></tr>
     <tr><td class="paramname">attacker_ip</td><td>The IP of the attacker </td></tr>
+    <tr><td class="paramname">spoofed_domain</td><td>The domain that the tool tries to spoof </td></tr>
+    <tr><td class="paramname">authoritative_ns</td><td>The authoritative nameserver for the target domain </td></tr>
+    <tr><td class="paramname">initial_id</td><td>The ID to use for guessing the response TXID. If not specified random ID is used </td></tr>
+    <tr><td class="paramname">ttl</td><td>The TTL value to put into the relative DNS field. (Default 30000) </td></tr>
+    <tr><td class="paramname">victim_mac</td><td>The victim server MAC address (Only needed for "faster flood" mode). </td></tr>
+    <tr><td class="paramname">nic_interface</td><td>The Network Card Interface to use (Reccomended on "faster flood" mode) </td></tr>
+    <tr><td class="paramname">interrupt_handler</td><td>The function that handle the CTRL+C signal </td></tr>
+    <tr><td class="paramname">blessing_terminal</td><td>The instance of the blessing terminal (optional) </td></tr>
+    <tr><td class="paramname">log</td><td>The function used to print messages </td></tr>
   </table>
   </dd>
 </dl>
@@ -206,6 +280,94 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="aa59092cd2bd23620644af9814f782888"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa59092cd2bd23620644af9814f782888">&#9670;&nbsp;</a></span>check_poisoning()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def dns_poisoning.DNSPoisoning.check_poisoning </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check Poisoning. </p>
+<p>Check if the attack succeded</p>
+<p>Ask the victim for the IP of the domain we are trying to spoof </p>
+
+</div>
+</div>
+<a id="a5b88cb0469db0817033e43088f6c17fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b88cb0469db0817033e43088f6c17fd">&#9670;&nbsp;</a></span>faster_flooding()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def dns_poisoning.DNSPoisoning.faster_flooding </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>victim_mac</em> = <code>None</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>nic_interface</em> = <code>None</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Faster Flooding Mode. </p>
+<p>Send Crafted Packet via Ethernet packets </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">victim_mac</td><td>The victim DNS server MAC address. If none is specified the one setted in the contructor will be used. </td></tr>
+    <tr><td class="paramname">nic_interface</td><td>The network interface to use. If none is specified the one setted in the contructor will be used.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>This funciton floods the request using layer two packet, which is generally faster than using a normal IP. </p>
+
+</div>
+</div>
+<a id="abd71b87190582b47006ea5f44554766a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd71b87190582b47006ea5f44554766a">&#9670;&nbsp;</a></span>open_socket()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def dns_poisoning.DNSPoisoning.open_socket </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Open Socket. </p>
+<p>Open a socket for flooding</p>
+<p>Open a socket for flooding packets instead of creating a new one for each request. </p>
+
+</div>
+</div>
 <a id="a7208959663e75447b0221fc7fab129e7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7208959663e75447b0221fc7fab129e7">&#9670;&nbsp;</a></span>send_crafted_packet()</h2>
 
@@ -235,12 +397,153 @@ Public Attributes</h2></td></tr>
 <p>Send crafted packet. </p>
 <p>This function bla bla bla bla aaaaaa </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">id_req</td><td>The TXID to be used 1) responses should come from the same dest port (53) 2) Question should match the query section 3) Query ID should match</td></tr>
+    <tr><td class="paramname">id_req</td><td>The TXID to be used</td></tr>
   </table>
   </dd>
 </dl>
+<p>A valid DNS response should respect the following params:</p><ul>
+<li>Response should come from the same dest port (53)</li>
+<li>Question should match the query section</li>
+<li>Query ID should match</li>
+</ul>
 <p>Use Default DNS port as default source port</p>
-<p>DNS Request: -) ID -) Question -) </p>
+<p>DNS Crafter response:</p><ul>
+<li>ID</li>
+<li>Authoritative</li>
+<li>Question<ul>
+<li>Invalid Domain</li>
+</ul>
+</li>
+<li>Source Port</li>
+<li>Authoritative Reponse<ul>
+<li>ns.bankofallan.co.uk</li>
+</ul>
+</li>
+<li>Additional RR<ul>
+<li>ns.bankofallan.co.uk -&gt; attacker_ip</li>
+<li>bankofallan.co.uk -&gt; attacker_ip</li>
+</ul>
+</li>
+</ul>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>: Check if recursion available </dd></dl>
+
+</div>
+</div>
+<a id="a9212c2ddbca12072d16ea7d71f08d1bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9212c2ddbca12072d16ea7d71f08d1bd">&#9670;&nbsp;</a></span>set_interface()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def dns_poisoning.DNSPoisoning.set_interface </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>interface</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set Interface. </p>
+<p>Set the network interface </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">interface</td><td>The network interface to use </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a2485de4baea787fa1d3bb22e422bffb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2485de4baea787fa1d3bb22e422bffb5">&#9670;&nbsp;</a></span>start_flooding()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def dns_poisoning.DNSPoisoning.start_flooding </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>number_of_guess</em> = <code>500</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>spacing</em> = <code>800</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Start Flooding. </p>
+<p>Start normal flooding attack</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">number_of_guess</td><td>Number of response to send (Default 500) </td></tr>
+    <tr><td class="paramname">spacing</td><td>The value to be added to the initial TXID</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Start the normal flooding attack which uses IP layer packets </p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>: Check that maximum int value do not surpass 65535 (max 16 bit value) </dd></dl>
+
+</div>
+</div>
+<a id="a65f1f3e1f022f64ca35c73b80b6ccbfe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65f1f3e1f022f64ca35c73b80b6ccbfe">&#9670;&nbsp;</a></span>stop_handler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def dns_poisoning.DNSPoisoning.stop_handler </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>sig</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>frame</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Stop Handler. </p>
+<p>Function called when CTRL+C is pressed </p>
 
 </div>
 </div>

@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classdns__attack_1_1DNSAttack_1_1InitialQueryFailed.html" title="InitialQueryFailed. " alt="" coords="5,29,197,71"/>
+<area shape="rect" id="node1" href="$classdns__attack_1_1DNSAttack_1_1CriticalError.html" title="Raised when a critical error occurred. " alt="" coords="5,39,208,80"/>
+<area shape="rect" id="node2" href="$classdns__attack_1_1DNSAttack_1_1InitialQueryFailed.html" title="Exception raised when the initial query fails. " alt="" coords="273,5,465,47"/>
+<area shape="rect" id="node3" href="$classdns__attack_1_1DNSAttack_1_1SuccessfulAttack.html" title="Raised when the attack succeded. " alt="" coords="256,71,483,112"/>
 </map>

@@ -1,9 +1,11 @@
 var indexSectionsWithContent =
 {
-  0: "_dgis",
-  1: "di",
+  0: "_abcdfgilmnostv",
+  1: "cdims",
   2: "d",
-  3: "_gs"
+  3: "_cfgos",
+  4: "afilnstv",
+  5: "bt"
 };
 
 var indexSectionNames =
@@ -11,7 +13,9 @@ var indexSectionNames =
   0: "all",
   1: "classes",
   2: "namespaces",
-  3: "functions"
+  3: "functions",
+  4: "variables",
+  5: "pages"
 };
 
 var indexSectionLabels =
@@ -19,6 +23,8 @@ var indexSectionLabels =
   0: "All",
   1: "Classes",
   2: "Namespaces",
-  3: "Functions"
+  3: "Functions",
+  4: "Variables",
+  5: "Pages"
 };
 

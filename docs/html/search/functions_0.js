@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_5f_5finit_5f_5f',['__init__',['../classdns__attack_1_1DNSAttack.html#ac7652093000c84c6e3288723261708c8',1,'dns_attack.DNSAttack.__init__()'],['../classdns__poisoning_1_1DNSPoisoning.html#a2aefb588dff724bbb239fb54e2c6ca19',1,'dns_poisoning.DNSPoisoning.__init__()']]]
+  ['_5f_5finit_5f_5f',['__init__',['../classdns__attack_1_1DNSAttack.html#aa69515236eab1df21db9c834bd79a21b',1,'dns_attack.DNSAttack.__init__()'],['../classdns__poisoning_1_1DNSPoisoning.html#a139501dd8885d190a903959cd74169fc',1,'dns_poisoning.DNSPoisoning.__init__()']]]
 ];

