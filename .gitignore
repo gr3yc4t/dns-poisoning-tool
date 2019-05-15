@@ -1,4 +1,10 @@
 
 __pycache__/
 .vscode/
-
+share/
+lib/
+lib64/
+pyvenc.cfg
+include/
+bin/
+.gitignore
