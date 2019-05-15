@@ -6,60 +6,25 @@
 #---------------------------------------------------------------------------
 
 
+INPUT                  = dns_attack.py dns_poisoning.py main.py main_page.py
+
 DOXYFILE_ENCODING      = UTF-8
-
-
 
 PROJECT_NAME           = "DNS Poisoning Tool"
 
-
 OUTPUT_DIRECTORY       = docs
 
-# If the CREATE_SUBDIRS tag is set to YES then doxygen will create 4096 sub-
-# directories (in 2 levels) under the output directory of each output format and
-# will distribute the generated files over these directories. Enabling this
-# option can be useful when feeding doxygen a huge amount of source files, where
-# putting all generated files in the same directory would otherwise causes
-# performance problems for the file system.
-# The default value is: NO.
-
 CREATE_SUBDIRS         = NO
-
-# If the ALLOW_UNICODE_NAMES tag is set to YES, doxygen will allow non-ASCII
-# characters to appear in the names of generated files. If set to NO, non-ASCII
-# characters will be escaped, for example _xE3_x81_x84 will be used for Unicode
-# U+3044.
-# The default value is: NO.
 
 ALLOW_UNICODE_NAMES    = NO
 
 
 OUTPUT_LANGUAGE        = English
 
-# If the BRIEF_MEMBER_DESC tag is set to YES, doxygen will include brief member
-# descriptions after the members that are listed in the file and class
-# documentation (similar to Javadoc). Set to NO to disable this.
-# The default value is: YES.
 
 BRIEF_MEMBER_DESC      = YES
 
-# If the REPEAT_BRIEF tag is set to YES, doxygen will prepend the brief
-# description of a member or function before the detailed description
-#
-# Note: If both HIDE_UNDOC_MEMBERS and BRIEF_MEMBER_DESC are set to NO, the
-# brief descriptions will be completely suppressed.
-# The default value is: YES.
-
 REPEAT_BRIEF           = YES
-
-# This tag implements a quasi-intelligent brief description abbreviator that is
-# used to form the text in various listings. Each string in this list, if found
-# as the leading text of the brief description, will be stripped from the text
-# and the result, after processing the whole list, is used as the annotated
-# text. Otherwise, the brief description is used as-is. If left blank, the
-# following values are used ($name is automatically replaced with the name of
-# the entity):The $name class, The $name widget, The $name file, is, provides,
-# specifies, contains, represents, a, an and the.
 
 ABBREVIATE_BRIEF       = "The $name class" \
                          "The $name widget" \
@@ -717,17 +682,7 @@ WARN_FORMAT            = "$file:$line: $text"
 
 WARN_LOGFILE           =
 
-#---------------------------------------------------------------------------
-# Configuration options related to the input files
-#---------------------------------------------------------------------------
 
-# The INPUT tag is used to specify the files and/or directories that contain
-# documented source files. You may enter file names like myfile.cpp or
-# directories like /usr/src/myproject. Separate the files or directories with
-# spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
-# Note: If this tag is empty the current directory is searched.
-
-INPUT                  = dns_attack.py dns_poisoning.py homework.py
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -794,6 +749,7 @@ FILE_PATTERNS          = *.c \
                          *.tcl \
                          *.vhd \
                          *.vhdl \
+                         *.dox \
                          *.ucf \
                          *.qsf
 

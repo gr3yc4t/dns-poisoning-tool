@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['criticalerror',['CriticalError',['../classdns__attack_1_1DNSAttack_1_1CriticalError.html',1,'dns_attack::DNSAttack']]]
+  ['attacktype',['AttackType',['../classdns__poisoning_1_1DNSPoisoning_1_1AttackType.html',1,'dns_poisoning::DNSPoisoning']]]
 ];

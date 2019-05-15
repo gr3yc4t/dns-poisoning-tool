@@ -1,3 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node2" href="$classdns__attack_1_1DNSAttack_1_1Mode.html" title="Used to specified the attack mode. " alt="" coords="109,5,303,32"/>
+<area shape="rect" id="node2" href="$classdns__attack_1_1DNSAttack_1_1Mode.html" title="Used to specified the attack mode. " alt="" coords="112,5,305,32"/>
+<area shape="rect" id="node3" href="$classdns__poisoning_1_1DNSPoisoning_1_1AttackType.html" title="Perform the type of attack to perform. " alt="" coords="109,57,308,98"/>
 </map>
