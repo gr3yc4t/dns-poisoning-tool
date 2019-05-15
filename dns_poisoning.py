@@ -8,13 +8,8 @@
 from scapy import *
 from scapy.all import *
 import scapy.layers.l2
-import time
-from multiprocessing.pool import ThreadPool
-import logging
-import threading
-import multiprocessing
 import signal
-import sys
+import random
 
 from enum import Enum
 
@@ -58,7 +53,7 @@ class DNSPoisoning:
     #
     def __init__(self, victim_server, spoofed_domain, attacker_ip, authoritative_ns,\
          initial_id=None, sport=53, ttl=30000, victim_mac=None, nic_interface=None, socket=None,\
-             attack_type=AttackType.NORMAL ,interrupt_handler=None, blessing_terminal=None, log=lambda msg: None):
+             attack_type=AttackType.NORMAL ,interrupt_handler=None, log=lambda msg: None):
         
         ## Victim Server IP
         self.victim_server = victim_server  
@@ -98,9 +93,7 @@ class DNSPoisoning:
         #Optional Parameters
 
         ## Logging Function
-        self.log = log        
-        ## Blessing terminal instance                             
-        self.t = blessing_terminal    
+        self.log = log         
         ## Handler of CTRL+C                     
         self.interrupt_handler = interrupt_handler         
 

