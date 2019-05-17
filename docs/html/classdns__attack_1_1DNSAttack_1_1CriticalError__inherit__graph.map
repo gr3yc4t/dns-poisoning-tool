@@ -1,3 +1,6 @@
 <map id="dns_attack.DNSAttack.CriticalError" name="dns_attack.DNSAttack.CriticalError">
-<area shape="rect" id="node3" href="$classdns__attack_1_1DNSAttack_1_1InitialQueryFailed.html" title="Exception raised when the initial query fails. " alt="" coords="11,169,203,211"/>
+<area shape="rect" id="node3" href="$classdns__attack_1_1DNSAttack_1_1InitialQueryFailed.html" title="Exception raised when the initial query fails. " alt="" coords="395,5,587,47"/>
+<area shape="rect" id="node4" href="$classdns__attack_1_1DNSAttack_1_1InvalidAttackType.html" title="Exception raised when the passed attack type is not valid. " alt="" coords="391,71,590,112"/>
+<area shape="rect" id="node5" href="$classdns__attack_1_1DNSAttack_1_1InvalidIPAddress.html" title="Exception raised when invalid IP address is passed. " alt="" coords="391,136,590,177"/>
+<area shape="rect" id="node6" href="$classdns__attack_1_1DNSAttack_1_1NSFetchError.html" title="Exception raised when NS server IP cannot be fetched. " alt="" coords="384,201,597,243"/>
 </map>

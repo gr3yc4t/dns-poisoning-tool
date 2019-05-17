@@ -80,6 +80,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning_1_1AttackType.html">AttackType</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Perform the type of attack to perform.  <a href="classdns__poisoning_1_1DNSPoisoning_1_1AttackType.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning_1_1InvalidMAC.html">InvalidMAC</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Raised when an invalid MAC address is provided.  <a href="classdns__poisoning_1_1DNSPoisoning_1_1InvalidMAC.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -313,9 +316,13 @@ Public Attributes</h2></td></tr>
     <tr><td class="paramname">sport</td><td>The source port used by the server to send query </td></tr>
     <tr><td class="paramname">ttl</td><td>The TTL value to put into the relative DNS field. (Default 30000) </td></tr>
     <tr><td class="paramname">victim_mac</td><td>The victim server MAC address (Only needed for "faster flood" mode). </td></tr>
-    <tr><td class="paramname">nic_interface</td><td>The Network Card Interface to use (Reccomended on "faster flood" mode) </td></tr>
-    <tr><td class="paramname">interrupt_handler</td><td>The function that handle the CTRL+C signal </td></tr>
-    <tr><td class="paramname">blessing_terminal</td><td>The instance of the blessing terminal (optional) </td></tr>
+    <tr><td class="paramname">nic_interface</td><td>The Network Card Interface to use (Reccomended on "faster flood" mode)</td></tr>
+  </table>
+  </dd>
+</dl>
+<pre class="fragment">@param interrupt_handler    The function that handle the CTRL+C signal    
+</pre> <dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
     <tr><td class="paramname">log</td><td>The function used to print messages </td></tr>
   </table>
   </dd>
@@ -342,8 +349,8 @@ Public Attributes</h2></td></tr>
 
 <p>Check Poisoning. </p>
 <p>Check if the attack succeded</p>
-<p>Ask the victim for the IP of the domain we are trying to spoof </p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>Finish implement this </dd></dl>
-<dl class="bug"><dt><b><a class="el" href="bug.html#_bug000002">Bug:</a></b></dt><dd>Does not work </dd></dl>
+<p>Ask the victim for the IP of the domain we are trying to spoof </p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>Finish implement this </dd></dl>
+<dl class="bug"><dt><b><a class="el" href="bug.html#_bug000001">Bug:</a></b></dt><dd>Does not work </dd></dl>
 
 </div>
 </div>
@@ -601,7 +608,7 @@ Public Attributes</h2></td></tr>
 </ul>
 </li>
 </ul>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>: Check if recursion available </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>: Check if recursion available </dd></dl>
 
 </div>
 </div>
@@ -791,7 +798,7 @@ Public Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<p>Start the normal flooding attack which uses IP layer packets </p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>: Check that maximum int value do not surpass 65535 (max 16 bit value) </dd></dl>
+<p>Start the normal flooding attack which uses IP layer packets </p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>: Check that maximum int value do not surpass 65535 (max 16 bit value) </dd></dl>
 
 </div>
 </div>

