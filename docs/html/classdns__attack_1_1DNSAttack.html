@@ -72,7 +72,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Brief description.  
+<p>Class to handle DNSPoisonig procedures.  
  <a href="classdns__attack_1_1DNSAttack.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
@@ -115,10 +115,13 @@ def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <tr class="memdesc:a46b363502a61cddfa71110cd170b669a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start the process to send the initial query. <br /></td></tr>
 <tr class="separator:a46b363502a61cddfa71110cd170b669a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a331220b48e1a84dbd156426aaa58d543"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a331220b48e1a84dbd156426aaa58d543">get_authoritative_server</a> (self, domain, dns_server_ip)</td></tr>
-<tr class="memdesc:a331220b48e1a84dbd156426aaa58d543"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get IP of the NS server (Unimplemented)  <a href="#a331220b48e1a84dbd156426aaa58d543">More...</a><br /></td></tr>
+<tr class="memdesc:a331220b48e1a84dbd156426aaa58d543"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get IP of the NS server.  <a href="#a331220b48e1a84dbd156426aaa58d543">More...</a><br /></td></tr>
 <tr class="separator:a331220b48e1a84dbd156426aaa58d543"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6311d646d23a4350d3a2ffa56816d306"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a6311d646d23a4350d3a2ffa56816d306">check_poisoning</a> (self, dns_server_ip=None, spoofed_ip=None)</td></tr>
+<tr class="memdesc:a6311d646d23a4350d3a2ffa56816d306"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the poisonig succeded.  <a href="#a6311d646d23a4350d3a2ffa56816d306">More...</a><br /></td></tr>
+<tr class="separator:a6311d646d23a4350d3a2ffa56816d306"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69068133f4c03478f5152937fa28bcf7"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a69068133f4c03478f5152937fa28bcf7">start</a> (self, number_of_tries=50, mode=<a class="el" href="classdns__attack_1_1DNSAttack_1_1Mode.html#a7183027ce8667672ea4e4a4d2401befa">Mode.NORMAL</a>, attack_type=<a class="el" href="classdns__poisoning_1_1DNSPoisoning_1_1AttackType.html#a2401b53573200692044168f09c1b29f4">DNSPoisoning.AttackType.NORMAL</a>)</td></tr>
-<tr class="memdesc:a69068133f4c03478f5152937fa28bcf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start.  <a href="#a69068133f4c03478f5152937fa28bcf7">More...</a><br /></td></tr>
+<tr class="memdesc:a69068133f4c03478f5152937fa28bcf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start the attack.  <a href="#a69068133f4c03478f5152937fa28bcf7">More...</a><br /></td></tr>
 <tr class="separator:a69068133f4c03478f5152937fa28bcf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -161,7 +164,7 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ac9f3212f683799488b0cce727c24b3a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Brief description. </p>
+<div class="textblock"><p>Class to handle DNSPoisonig procedures. </p>
 <p>This class provide an interface to perform the Kaminsky DNS poisoning attack.<br />
  Apart from providing an interface to the DNSPoisoning module, it has function that allows to fetch the TXID and the port used by the target server. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -262,13 +265,57 @@ Public Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd><p class="startdd">Implement automatic NS server fetching when no ns_server_ip is passed </p>
-<p class="enddd">Check if port and IP are valid </p>
-</dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>Check if port and IP are valid </dd></dl>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a6311d646d23a4350d3a2ffa56816d306"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6311d646d23a4350d3a2ffa56816d306">&#9670;&nbsp;</a></span>check_poisoning()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def dns_attack.DNSAttack.check_poisoning </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>dns_server_ip</em> = <code>None</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>spoofed_ip</em> = <code>None</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check if the poisonig succeded. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dns_server_ip</td><td>The server to check </td></tr>
+    <tr><td class="paramname">spoofed_ip</td><td>The IP address that should be spoofed </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True in case of success, False otherwire</dd></dl>
+<p>Ask an "A" query to the victim server and check if the returned IP is the one inteded to spoof.<br />
+ If no arguement is supplied, parameter are taken from the class attributes. </p>
+
+</div>
+</div>
 <a id="a331220b48e1a84dbd156426aaa58d543"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a331220b48e1a84dbd156426aaa58d543">&#9670;&nbsp;</a></span>get_authoritative_server()</h2>
 
@@ -301,7 +348,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get IP of the NS server (Unimplemented) </p>
+<p>Get IP of the NS server. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">(str)</td><td>domain The domain used to fetch NS server </td></tr>
@@ -310,7 +357,7 @@ Public Attributes</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(IP) the NS server IP</dd></dl>
-<p><a class="el" href="classdns__attack_1_1DNSAttack_1_1NSFetchError.html" title="Exception raised when NS server IP cannot be fetched. ">DNSAttack.NSFetchError</a> </p>
+<p>Raises <a class="el" href="classdns__attack_1_1DNSAttack_1_1NSFetchError.html" title="Exception raised when NS server IP cannot be fetched. ">DNSAttack.NSFetchError</a> in case of fetching error </p>
 
 </div>
 </div>
@@ -375,15 +422,19 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Start. </p>
-<p>Start the attack </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Start the attack. </p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">number_of_tries</td><td>(int) The number of tentative (Default 50) </td></tr>
     <tr><td class="paramname">mode</td><td>(<a class="el" href="classdns__attack_1_1DNSAttack_1_1Mode.html" title="Used to specified the attack mode. ">DNSAttack.Mode</a>) The type of attack to be performed, see the above link </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classdns__attack_1_1DNSAttack_1_1Mode.html" title="Used to specified the attack mode. ">DNSAttack::Mode</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classdns__attack_1_1DNSAttack_1_1Mode.html" title="Used to specified the attack mode. ">DNSAttack::Mode</a></dd></dl>
+<p>Raise <a class="el" href="classdns__attack_1_1DNSAttack_1_1SuccessfulAttack.html" title="Raised when the attack succeded. ">DNSAttack::SuccessfulAttack</a> in case of successful attack.<br />
+  Raise <a class="el" href="classdns__attack_1_1DNSAttack_1_1CriticalError.html" title="Raised when a critical error occurred. ">DNSAttack::CriticalError</a> in case of error.<br />
+  Raise <a class="el" href="classdns__attack_1_1DNSAttack_1_1InvalidAttackType.html" title="Exception raised when the passed attack type is not valid. ">DNSAttack::InvalidAttackType</a> in case an invalid attack type is provided.<br />
+ </p>
 
 </div>
 </div>

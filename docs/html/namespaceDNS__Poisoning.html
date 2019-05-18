@@ -67,6 +67,13 @@ $(function() {
 <a href="#details">More...</a></p>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This package includes all methos to execute the poisoning attack. </p>
+<p><b>DNSPoisoning.faster_flooding</b> sends packet at layer two (for this reason it requires both victim MAC and network interface specified) , making the attack faster and more prone to succed. However this feature can be used only when the victim server is on the same network of the attacker.<br />
+ <b>DNSPoisoning.start</b> instead uses the IP layer and therefore can be applied in any situation.<br />
+ Two types of attack are implemented:</p><ul>
+<li>Classical Attack</li>
+<li>Dan's Attack</li>
+</ul>
+<p>The first one only tries to spoof a single domain (the one setted in the "spoofed_domain") while the other one tries to spoof the NS server. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

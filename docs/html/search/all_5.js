@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['fast',['FAST',['../classdns__attack_1_1DNSAttack_1_1Mode.html#a7de52c622511a5fd41e3682ada3ace0c',1,'dns_attack::DNSAttack::Mode']]],
-  ['faster_5fflooding',['faster_flooding',['../classdns__poisoning_1_1DNSPoisoning.html#a5b88cb0469db0817033e43088f6c17fd',1,'dns_poisoning::DNSPoisoning']]]
+  ['get_5fauthoritative_5fserver',['get_authoritative_server',['../classdns__attack_1_1DNSAttack.html#a331220b48e1a84dbd156426aaa58d543',1,'dns_attack::DNSAttack']]],
+  ['get_5fclassical_5fresponse',['get_classical_response',['../classdns__poisoning_1_1DNSPoisoning.html#ac4150d8575e36ec1b76088e00d2dcacc',1,'dns_poisoning::DNSPoisoning']]],
+  ['get_5fdan_5fresponse',['get_dan_response',['../classdns__poisoning_1_1DNSPoisoning.html#a15d953486c6c217cd05882eeb8626138',1,'dns_poisoning::DNSPoisoning']]],
+  ['get_5fserver_5fdata',['get_server_data',['../classdns__attack_1_1DNSAttack.html#ab4f1cacfe4674a0ce9542ba0286fbe44',1,'dns_attack::DNSAttack']]]
 ];

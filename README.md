@@ -1,9 +1,11 @@
 # DNS Poisoning Tool
-A tool to perform DNS cache poisoning against vulnerable server
+A tool to perform DNS cache poisoning against vulnerable server.
 
 Attack methodology is widely described here: [Kaminsky Attack](http://unixwiz.net/techtips/iguide-kaminsky-dns-vuln.html)
 
 A detailed software documentation can be found [here](https://gr3yc4t.github.io/dns-poisoning-tool/)
+
+**WARNING**: This code is intended to be use only in the contex of a particular assignment. If you want to reuse some of the functionalities refer to the [modules section](#modules)
 
 ## Requirements
 * Scapy (For packet crafting) `pip install scapy`
@@ -11,6 +13,7 @@ A detailed software documentation can be found [here](https://gr3yc4t.github.io/
 * DNS Python (For initial DNS query)  `pip install dnspython`
 
 Inline requirements installation command pip install:
+
 ```pip install scapy blessings dnspython```
 
 ## Usage
@@ -53,3 +56,23 @@ optional arguments:
   -vb {1,2,3,4}, --verbosity {1,2,3,4}
                         Verbosity level
  ```
+## Features
+The tool support two version of the attack that can be specified with the related parameter
+* Classical poisoning ([Shenanigans Version 1](http://unixwiz.net/techtips/iguide-kaminsky-dns-vuln.html#shenanigansv1))
+* Dan's Shenanigans ([Dan's Version](http://unixwiz.net/techtips/iguide-kaminsky-dns-vuln.html#shenanigansv2))
+
+In addition two modes are available for flooding
+* **Normal Flooding** - which uses IP layer
+* **Faster Flooding** - which uses Ethernet layer
+
+When "*faster flooding*" is used, both victim MAC Address and a network interface must be supplied.
+
+### <a id="modules"></a> Modules
+The code is developed in a modular way in order to be implemented in other tools. An extensive class documentation can be found [here](https://gr3yc4t.github.io/dns-poisoning-tool/html/annotated.html).
+For example the following code starts a flood of DNS crafted response against the server at "8.8.8.8" in order to spoof the google domain and redirect users to the attacker IP (66.66.66.66):
+```python 
+import DNSPoisoning
+
+poisoning = DNSPoisoning('8.8.8.8', 'www.google.com', '66.66.66.66')
+poisoning.start_flooding()
+```

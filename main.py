@@ -4,6 +4,8 @@
 #   This package is responsible to execute all the passages required for the attack related to our ETH homework.
 #
 
+##      @file main
+#
 
 import dns.resolver
 from dns.resolver import NoAnswer

