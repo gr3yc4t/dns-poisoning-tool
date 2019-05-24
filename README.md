@@ -1,7 +1,7 @@
 # DNS Poisoning Tool
 A tool to perform DNS cache poisoning against vulnerable server.
 
-![Tool Screen]("docs/dnspoisoning_screen.png")
+![Image](docs/dnspoisoning_screen_2.png)
 
 Both attack methodology is widely described here: [Kaminsky Attack](http://unixwiz.net/techtips/iguide-kaminsky-dns-vuln.html)
 
@@ -17,6 +17,10 @@ A detailed software documentation can be found [here](https://gr3yc4t.github.io/
 Inline requirements installation command pip install:
 
 ```pip install scapy blessings dnspython```
+
+Otherwise simply use the provided requirements file
+
+```pip install -r requirements.txt```
 
 ## Usage
 ```

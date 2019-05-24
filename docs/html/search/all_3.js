@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['dan',['DAN',['../classdns__poisoning_1_1DNSPoisoning_1_1AttackType.html#a13dd30d13ac1836566d3ef97229b99ec',1,'dns_poisoning::DNSPoisoning::AttackType']]],
-  ['dns_5fattack',['DNS_Attack',['../namespaceDNS__Attack.html',1,'']]],
-  ['dnsattack',['DNSAttack',['../classdns__attack_1_1DNSAttack.html',1,'dns_attack']]],
-  ['dnspoisoning',['DNSPoisoning',['../classdns__poisoning_1_1DNSPoisoning.html',1,'dns_poisoning']]]
+  ['check_5fpoisoning',['check_poisoning',['../classdns__attack_1_1DNSAttack.html#a6311d646d23a4350d3a2ffa56816d306',1,'dns_attack::DNSAttack']]],
+  ['create_5fsocket',['create_socket',['../classdns__poisoning_1_1DNSPoisoning.html#a429a52b36eab4711850c5e67aa8785f8',1,'dns_poisoning::DNSPoisoning']]],
+  ['criticalerror',['CriticalError',['../classdns__attack_1_1DNSAttack_1_1CriticalError.html',1,'dns_attack::DNSAttack']]]
 ];

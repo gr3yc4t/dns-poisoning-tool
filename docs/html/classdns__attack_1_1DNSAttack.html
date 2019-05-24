@@ -101,9 +101,9 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a462e39186d03cd5251782d42e4b64734"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a462e39186d03cd5251782d42e4b64734">__init__</a> (self, victim_server_ip, attacked_domain, bad_server_data, attacker_ip, ns_server_ip=None, victim_mac=None, nic_interface=None, attack_type=None, sigint_handler=None, log_function=lambda msg:None)</td></tr>
-<tr class="memdesc:a462e39186d03cd5251782d42e4b64734"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructors.  <a href="#a462e39186d03cd5251782d42e4b64734">More...</a><br /></td></tr>
-<tr class="separator:a462e39186d03cd5251782d42e4b64734"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a655a860d83d1758c884f53ca97a31422"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a655a860d83d1758c884f53ca97a31422">__init__</a> (self, victim_server_ip, attacked_domain, bad_server_data, <a class="el" href="classdns__attack_1_1DNSAttack.html#ae92bc03a2f7817ab82645b382c3227f5">attacker_ip</a>, <a class="el" href="classdns__attack_1_1DNSAttack.html#ae7ebfd2135a524378b145e11fd7024a0">bad_domain</a>, ns_server_ip=None, <a class="el" href="classdns__attack_1_1DNSAttack.html#a965d51d4b608a26414e90f52da888f7f">victim_mac</a>=None, <a class="el" href="classdns__attack_1_1DNSAttack.html#a3c814016d291aa3d4635c8964ba79f8a">nic_interface</a>=None, attack_type=None, <a class="el" href="classdns__attack_1_1DNSAttack.html#a47028c7038688c3eae948560e5745e63">sigint_handler</a>=None, log_function=lambda msg:None)</td></tr>
+<tr class="memdesc:a655a860d83d1758c884f53ca97a31422"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructors.  <a href="#a655a860d83d1758c884f53ca97a31422">More...</a><br /></td></tr>
+<tr class="separator:a655a860d83d1758c884f53ca97a31422"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b6c23161d3648c22a8400a0472ed697"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a2b6c23161d3648c22a8400a0472ed697">stop_attack</a> (self, sig, frame)</td></tr>
 <tr class="memdesc:a2b6c23161d3648c22a8400a0472ed697"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler used to stop the attack.  <a href="#a2b6c23161d3648c22a8400a0472ed697">More...</a><br /></td></tr>
 <tr class="separator:a2b6c23161d3648c22a8400a0472ed697"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -114,12 +114,15 @@ Public Member Functions</h2></td></tr>
 def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a46b363502a61cddfa71110cd170b669a">send_initial_query</a> (self)</td></tr>
 <tr class="memdesc:a46b363502a61cddfa71110cd170b669a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start the process to send the initial query. <br /></td></tr>
 <tr class="separator:a46b363502a61cddfa71110cd170b669a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a331220b48e1a84dbd156426aaa58d543"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a331220b48e1a84dbd156426aaa58d543">get_authoritative_server</a> (self, domain, dns_server_ip)</td></tr>
+<tr class="memitem:a331220b48e1a84dbd156426aaa58d543"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a331220b48e1a84dbd156426aaa58d543">get_authoritative_server</a> (self, <a class="el" href="classdns__attack_1_1DNSAttack.html#a2a6e6d32a14c8de84e25c7f071084e7d">domain</a>, dns_server_ip)</td></tr>
 <tr class="memdesc:a331220b48e1a84dbd156426aaa58d543"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get IP of the NS server.  <a href="#a331220b48e1a84dbd156426aaa58d543">More...</a><br /></td></tr>
 <tr class="separator:a331220b48e1a84dbd156426aaa58d543"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6311d646d23a4350d3a2ffa56816d306"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a6311d646d23a4350d3a2ffa56816d306">check_poisoning</a> (self, dns_server_ip=None, spoofed_ip=None)</td></tr>
 <tr class="memdesc:a6311d646d23a4350d3a2ffa56816d306"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the poisonig succeded.  <a href="#a6311d646d23a4350d3a2ffa56816d306">More...</a><br /></td></tr>
 <tr class="separator:a6311d646d23a4350d3a2ffa56816d306"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ba40018d9763d4ca7fa31187feb1cff"><td class="memItemLeft" align="right" valign="top"><a id="a4ba40018d9763d4ca7fa31187feb1cff"></a>
+def&#160;</td><td class="memItemRight" valign="bottom"><b>check_recursion</b> (self, dns_server_ip=None, <a class="el" href="classdns__attack_1_1DNSAttack.html#a2a6e6d32a14c8de84e25c7f071084e7d">domain</a>=None)</td></tr>
+<tr class="separator:a4ba40018d9763d4ca7fa31187feb1cff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69068133f4c03478f5152937fa28bcf7"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a69068133f4c03478f5152937fa28bcf7">start</a> (self, number_of_tries=50, mode=<a class="el" href="classdns__attack_1_1DNSAttack_1_1Mode.html#a7183027ce8667672ea4e4a4d2401befa">Mode.NORMAL</a>, attack_type=<a class="el" href="classdns__poisoning_1_1DNSPoisoning_1_1AttackType.html#a2401b53573200692044168f09c1b29f4">DNSPoisoning.AttackType.NORMAL</a>)</td></tr>
 <tr class="memdesc:a69068133f4c03478f5152937fa28bcf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start the attack.  <a href="#a69068133f4c03478f5152937fa28bcf7">More...</a><br /></td></tr>
 <tr class="separator:a69068133f4c03478f5152937fa28bcf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -130,31 +133,44 @@ Public Attributes</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><b>victim_server_ip</b></td></tr>
 <tr class="separator:a1320c2366b97b8ae76b9105f2c0634b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae92bc03a2f7817ab82645b382c3227f5"><td class="memItemLeft" align="right" valign="top"><a id="ae92bc03a2f7817ab82645b382c3227f5"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>attacker_ip</b></td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#ae92bc03a2f7817ab82645b382c3227f5">attacker_ip</a></td></tr>
+<tr class="memdesc:ae92bc03a2f7817ab82645b382c3227f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attacker IP address. <br /></td></tr>
 <tr class="separator:ae92bc03a2f7817ab82645b382c3227f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a6e6d32a14c8de84e25c7f071084e7d"><td class="memItemLeft" align="right" valign="top"><a id="a2a6e6d32a14c8de84e25c7f071084e7d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>domain</b></td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a2a6e6d32a14c8de84e25c7f071084e7d">domain</a></td></tr>
+<tr class="memdesc:a2a6e6d32a14c8de84e25c7f071084e7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Domain to spoof. <br /></td></tr>
 <tr class="separator:a2a6e6d32a14c8de84e25c7f071084e7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a717eee68d7b112742663b35564989539"><td class="memItemLeft" align="right" valign="top"><a id="a717eee68d7b112742663b35564989539"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>bad_udp_ip</b></td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a717eee68d7b112742663b35564989539">bad_udp_ip</a></td></tr>
+<tr class="memdesc:a717eee68d7b112742663b35564989539"><td class="mdescLeft">&#160;</td><td class="mdescRight">Light DNS IP. <br /></td></tr>
 <tr class="separator:a717eee68d7b112742663b35564989539"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6b322e114c263150ac2810a4e7bb545"><td class="memItemLeft" align="right" valign="top"><a id="ac6b322e114c263150ac2810a4e7bb545"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>bad_udp_port</b></td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#ac6b322e114c263150ac2810a4e7bb545">bad_udp_port</a></td></tr>
+<tr class="memdesc:ac6b322e114c263150ac2810a4e7bb545"><td class="mdescLeft">&#160;</td><td class="mdescRight">Light DNS port. <br /></td></tr>
 <tr class="separator:ac6b322e114c263150ac2810a4e7bb545"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7ebfd2135a524378b145e11fd7024a0"><td class="memItemLeft" align="right" valign="top"><a id="ae7ebfd2135a524378b145e11fd7024a0"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#ae7ebfd2135a524378b145e11fd7024a0">bad_domain</a></td></tr>
+<tr class="memdesc:ae7ebfd2135a524378b145e11fd7024a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Domain owned by the attacker, used to fetch TXID and source port. <br /></td></tr>
+<tr class="separator:ae7ebfd2135a524378b145e11fd7024a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a965d51d4b608a26414e90f52da888f7f"><td class="memItemLeft" align="right" valign="top"><a id="a965d51d4b608a26414e90f52da888f7f"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>victim_mac</b></td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a965d51d4b608a26414e90f52da888f7f">victim_mac</a></td></tr>
+<tr class="memdesc:a965d51d4b608a26414e90f52da888f7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Victim MAC address (only for faster flooding) <br /></td></tr>
 <tr class="separator:a965d51d4b608a26414e90f52da888f7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c814016d291aa3d4635c8964ba79f8a"><td class="memItemLeft" align="right" valign="top"><a id="a3c814016d291aa3d4635c8964ba79f8a"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>nic_interface</b></td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a3c814016d291aa3d4635c8964ba79f8a">nic_interface</a></td></tr>
+<tr class="memdesc:a3c814016d291aa3d4635c8964ba79f8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Network Card Interface to use (only for faster flooding) <br /></td></tr>
 <tr class="separator:a3c814016d291aa3d4635c8964ba79f8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47028c7038688c3eae948560e5745e63"><td class="memItemLeft" align="right" valign="top"><a id="a47028c7038688c3eae948560e5745e63"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>sigint_handler</b></td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a47028c7038688c3eae948560e5745e63">sigint_handler</a></td></tr>
+<tr class="memdesc:a47028c7038688c3eae948560e5745e63"><td class="mdescLeft">&#160;</td><td class="mdescRight">SIGINT (Ctrl+C) handler to use. <br /></td></tr>
 <tr class="separator:a47028c7038688c3eae948560e5745e63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74f5736228981dac0dca713508b0e995"><td class="memItemLeft" align="right" valign="top"><a id="a74f5736228981dac0dca713508b0e995"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>log</b></td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a74f5736228981dac0dca713508b0e995">log</a></td></tr>
+<tr class="memdesc:a74f5736228981dac0dca713508b0e995"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logging function to use. <br /></td></tr>
 <tr class="separator:a74f5736228981dac0dca713508b0e995"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92fa61338e6c5e785d38adb6055e0cad"><td class="memItemLeft" align="right" valign="top"><a id="a92fa61338e6c5e785d38adb6055e0cad"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>stop_flag</b></td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__attack_1_1DNSAttack.html#a92fa61338e6c5e785d38adb6055e0cad">stop_flag</a></td></tr>
+<tr class="memdesc:a92fa61338e6c5e785d38adb6055e0cad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop running procedures. <br /></td></tr>
 <tr class="separator:a92fa61338e6c5e785d38adb6055e0cad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c6d4482f855d1b04eb0d5e22dcd7d1c"><td class="memItemLeft" align="right" valign="top"><a id="a6c6d4482f855d1b04eb0d5e22dcd7d1c"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>ns_server_ip</b></td></tr>
@@ -168,8 +184,8 @@ Public Attributes</h2></td></tr>
 <p>This class provide an interface to perform the Kaminsky DNS poisoning attack.<br />
  Apart from providing an interface to the DNSPoisoning module, it has function that allows to fetch the TXID and the port used by the target server. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a462e39186d03cd5251782d42e4b64734"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a462e39186d03cd5251782d42e4b64734">&#9670;&nbsp;</a></span>__init__()</h2>
+<a id="a655a860d83d1758c884f53ca97a31422"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a655a860d83d1758c884f53ca97a31422">&#9670;&nbsp;</a></span>__init__()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -203,6 +219,12 @@ Public Attributes</h2></td></tr>
           <td></td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>attacker_ip</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>bad_domain</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -253,8 +275,7 @@ Public Attributes</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">victim_server_ip</td><td></td></tr>
     <tr><td class="paramname">attacked_domain</td><td></td></tr>
-    <tr><td class="paramname">bad_udp_ip</td><td>The UDP server IP </td></tr>
-    <tr><td class="paramname">bad_udp_port</td><td>The UDP server port </td></tr>
+    <tr><td class="paramname">bad_server_data</td><td>(ip, port) The UDP server IP and port </td></tr>
     <tr><td class="paramname">attacker_ip</td><td></td></tr>
     <tr><td class="paramname">victim_mac</td><td>The victim server MAC address (Only required for faster flooding) </td></tr>
     <tr><td class="paramname">ns_server_ip</td><td>The authoritative NS server for the target domain </td></tr>
