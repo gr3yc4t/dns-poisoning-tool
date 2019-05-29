@@ -32,7 +32,7 @@ usage: main.py [-h] -t DOMAIN -a ATTACKER_IP -v VICTIM_DNS_IP
                [-bs BAD_SERVER_IP] [-bp BAD_SERVER_PORT] -bd BAD_DOMAIN
                [-ns NS_SERVER] [-i INTERFACE] [-at {NORMAL,DAN}]
                [-m {NORMAL,FAST}] [-vm VICTIM_MAC] [-si SECRET_IP]
-               [-sp SECRET_PORT] [-nc] [-vb {1,2,3,4}]
+               [-sp SECRET_PORT] [-n NUM_ATTACK] [-nc] [-vb {1,2,3,4}]
 
 DNS Poisoning Attack Tool
 
@@ -64,6 +64,8 @@ optional arguments:
                         IP to bind for the secret fetcher
   -sp SECRET_PORT, --secret-port SECRET_PORT
                         Port to bind for the secret fetcher
+  -n NUM_ATTACK, --num-attack NUM_ATTACK
+                        Number of attack to perform
   -nc, --no-colors      Suppress coloured terminal output
   -vb {1,2,3,4}, --verbosity {1,2,3,4}
                         Verbosity level
