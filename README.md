@@ -5,7 +5,7 @@ A tool to perform DNS cache poisoning against vulnerable server.
 
 Both attack methodology is widely described here: [Kaminsky Attack](http://unixwiz.net/techtips/iguide-kaminsky-dns-vuln.html)
 
-A detailed software documentation can be found [here](https://gr3yc4t.github.io/dns-poisoning-tool/)
+A detailed software documentation can be found [here](https://gr3yc4t.github.io/dns-poisoning-tool/html/annotated.html)
 
 **WARNING**: This code is intended to be use only in the contex of a particular assignment. If you want to reuse some of the functionalities refer to the [modules section](#modules)
 

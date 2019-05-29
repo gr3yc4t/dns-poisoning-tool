@@ -133,7 +133,7 @@ def launch_attack(victim_server_ip, domain, bad_server_data, attacker_ip, bad_do
         if number_of_tries == None:
                 number_of_tries=50
 
-        attack.start(number_of_tries, mode=DNSAttack.Mode.FAST) 
+        attack.start(number_of_tries, mode=DNSAttack.Mode.FAST, attack_type=attack_type) 
 
 
 ##
