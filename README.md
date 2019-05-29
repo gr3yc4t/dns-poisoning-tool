@@ -25,7 +25,7 @@ Otherwise simply use the provided requirements file
 ```pip3 install -r requirements.txt```
 
 ## Usage
-The file ```launch.sh``` can be edited with all the necessary paramters to carry on the attack or, instead, you could use the command line parameter directly.
+The files ```launch.sh``` and ```launch_fast.sh``` can be edited with all the necessary paramters to carry on the attack or, instead, you could use the command line parameter directly.
 
 ```
 usage: main.py [-h] -t DOMAIN -a ATTACKER_IP -v VICTIM_DNS_IP

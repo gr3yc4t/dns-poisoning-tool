@@ -62,7 +62,7 @@ class DNSPoisoning:
     #   @param ttl              The TTL value to put into the relative DNS field. (Default 30000)
     #   @param victim_mac       The victim server MAC address (Only needed for "faster flood" mode).
     #   @param nic_interface    The Network Card Interface to use (Reccomended on "faster flood" mode)
-    #
+    #   @attack_type            The type of attack to perform, see @ref DNSPoisoning.AttackType for additional references
     #
     #   @param interrupt_handler    The function that handle the CTRL+C signal    
     #   @param log              The function used to print messages
@@ -165,7 +165,6 @@ class DNSPoisoning:
     #
     #   Open a socket for flooding packets instead of creating a new one for each request.
     #
-
     def open_socket(self):
         if self.flood_socket != None:
             self.flood_socket.close()

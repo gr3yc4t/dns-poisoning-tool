@@ -285,13 +285,13 @@ class DNSAttack:
     ##  
     #   @brief Start the attack
     #   @param number_of_tries (int) The number of tentative (Default 50)
-    #   @param mode (DNSAttack.Mode) The type of attack to be performed, see the above link
+    #   @param mode (string) The type of attack to be performed, see the above link
     #   @see DNSAttack::Mode
     #
     #   @exceptions Raise DNSAttack::SuccessfulAttack in case of successful attack.\n
     #   @exceptions Raise DNSAttack::CriticalError in case of error.\n
     #   @exceptions Raise DNSAttack::InvalidAttackType in case an invalid attack type is provided.\n
-    def start(self, number_of_tries=50, mode=Mode.NORMAL, attack_type="NORMAL"):
+    def start(self, number_of_tries=50, mode="NORMAL", attack_type="NORMAL"):
 
         succeded = False
         num = number_of_tries
