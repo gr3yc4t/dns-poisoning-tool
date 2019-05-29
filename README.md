@@ -23,6 +23,8 @@ Otherwise simply use the provided requirements file
 ```pip install -r requirements.txt```
 
 ## Usage
+The file ```launch.sh``` can be edited with all the necessary paramters to carry on the attack or, instead, you could use the command line parameter directly.
+
 ```
 usage: main.py [-h] -t DOMAIN -a ATTACKER_IP -v VICTIM_DNS_IP
                [-bs BAD_SERVER_IP] [-bp BAD_SERVER_PORT] -bd BAD_DOMAIN
@@ -74,6 +76,8 @@ In addition two modes are available for flooding
 * **Faster Flooding** - which uses Ethernet layer
 
 When "*faster flooding*" is used, both victim MAC Address and a network interface must be supplied.
+
+The secret is printed both on the terminal output and in ```log_secret.txt``` file. 
 
 ### <a id="modules"></a> Modules
 The code is developed in a modular way in order to be implemented in other tools. An extensive class documentation can be found [here](https://gr3yc4t.github.io/dns-poisoning-tool/html/annotated.html).
