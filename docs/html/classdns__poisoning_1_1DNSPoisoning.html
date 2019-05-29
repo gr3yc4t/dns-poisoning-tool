@@ -119,9 +119,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5b88cb0469db0817033e43088f6c17fd"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a5b88cb0469db0817033e43088f6c17fd">faster_flooding</a> (self, victim_mac=None, <a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#ad93385ef31024e556a14abdca1dffed7">nic_interface</a>=None)</td></tr>
 <tr class="memdesc:a5b88cb0469db0817033e43088f6c17fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Faster Flooding Mode.  <a href="#a5b88cb0469db0817033e43088f6c17fd">More...</a><br /></td></tr>
 <tr class="separator:a5b88cb0469db0817033e43088f6c17fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acfbe5dc582f1170fcf139a29b72448b5"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#acfbe5dc582f1170fcf139a29b72448b5">start_flooding</a> (self, number_of_guess=10, spacing=2, socket=None)</td></tr>
-<tr class="memdesc:acfbe5dc582f1170fcf139a29b72448b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start Flooding.  <a href="#acfbe5dc582f1170fcf139a29b72448b5">More...</a><br /></td></tr>
-<tr class="separator:acfbe5dc582f1170fcf139a29b72448b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aceeea27bd99034c90c0b940db260a8cb"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#aceeea27bd99034c90c0b940db260a8cb">start_flooding</a> (self, number_of_guess=2, spacing=None, socket=None)</td></tr>
+<tr class="memdesc:aceeea27bd99034c90c0b940db260a8cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start Flooding.  <a href="#aceeea27bd99034c90c0b940db260a8cb">More...</a><br /></td></tr>
+<tr class="separator:aceeea27bd99034c90c0b940db260a8cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65f1f3e1f022f64ca35c73b80b6ccbfe"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a65f1f3e1f022f64ca35c73b80b6ccbfe">stop_handler</a> (self, sig, frame)</td></tr>
 <tr class="memdesc:a65f1f3e1f022f64ca35c73b80b6ccbfe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop Handler.  <a href="#a65f1f3e1f022f64ca35c73b80b6ccbfe">More...</a><br /></td></tr>
 <tr class="separator:a65f1f3e1f022f64ca35c73b80b6ccbfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -192,7 +192,7 @@ Public Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This package includes all methos to execute the poisoning attack. </p>
 <p><b><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#a5b88cb0469db0817033e43088f6c17fd" title="Faster Flooding Mode. ">DNSPoisoning.faster_flooding</a></b> sends packet at layer two (for this reason it requires both victim MAC and network interface specified) , making the attack faster and more prone to succed. However this feature can be used only when the victim server is on the same network of the attacker.<br />
- <b><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#acfbe5dc582f1170fcf139a29b72448b5" title="Start Flooding. ">DNSPoisoning.start_flooding</a></b> instead uses the IP layer and therefore can be applied in any situation.<br />
+ <b><a class="el" href="classdns__poisoning_1_1DNSPoisoning.html#aceeea27bd99034c90c0b940db260a8cb" title="Start Flooding. ">DNSPoisoning.start_flooding</a></b> instead uses the IP layer and therefore can be applied in any situation.<br />
  Two types of attack are implemented:</p><ul>
 <li>Classical Attack</li>
 <li>Dan's Attack</li>
@@ -729,8 +729,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="acfbe5dc582f1170fcf139a29b72448b5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acfbe5dc582f1170fcf139a29b72448b5">&#9670;&nbsp;</a></span>start_flooding()</h2>
+<a id="aceeea27bd99034c90c0b940db260a8cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aceeea27bd99034c90c0b940db260a8cb">&#9670;&nbsp;</a></span>start_flooding()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -745,13 +745,13 @@ Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>number_of_guess</em> = <code>10</code>, </td>
+          <td class="paramname"><em>number_of_guess</em> = <code>2</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>spacing</em> = <code>2</code>, </td>
+          <td class="paramname"><em>spacing</em> = <code>None</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -777,7 +777,7 @@ Public Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<p>Start the normal flooding attack which uses IP layer packets </p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>: Check that maximum int value do not surpass 65535 (max 16 bit value) </dd></dl>
+<p>Start the normal flooding attack which uses IP layer packets </p>
 
 </div>
 </div>

