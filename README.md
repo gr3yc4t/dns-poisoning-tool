@@ -7,7 +7,7 @@ Both attack methodology is widely described here: [Kaminsky Attack](http://unixw
 
 A detailed software documentation can be found [here](https://gr3yc4t.github.io/dns-poisoning-tool/html/annotated.html)
 
-**WARNING**: This code is intended to be use only in the contex of a particular assignment. If you want to reuse some of the functionalities refer to the [modules section](#modules). 
+**WARNING**: This code is intended to be used only in the context of a particular assignment. If you want to reuse some of the functionalities refer to the [modules section](#modules). 
 
 **NOTE**: When used to test homework result the **FAST** mode is mandatory since otherwise packets are transmitted too slowly causing the attack to fail.
 
